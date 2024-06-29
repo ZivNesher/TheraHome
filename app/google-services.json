@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "183173926212",
+    "project_id": "bodysync-f5388",
+    "storage_bucket": "bodysync-f5388.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183173926212:android:f05d3909a2aca305eedb11",
+        "android_client_info": {
+          "package_name": "com.example.finalproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMq_h055BsFeURShNiZ084-pCUOUuSGC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/logo_for_top"
+        android:layout_weight="10"
+        ></ImageView>
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="@color/white"
+        ></com.google.android.material.textview.MaterialTextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="60"
+        android:orientation="vertical"
+        android:background="@color/white">
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:text="Welcome"
+            android:textAlignment="center"
+            android:textSize="50sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal|bold"
+            ></com.google.android.material.textview.MaterialTextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:background="@color/white">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:visibility="invisible"
+                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
+                <ImageButton
+                    android:id="@+id/twitter_login_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/twitter_3_logo"
+                    android:background="@android:color/transparent"                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" ></ImageButton>
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:visibility="invisible"
+                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
+
+                <ImageButton
+                    android:id="@+id/facebook_login_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/facebook_3_logo"
+                    android:background="@android:color/transparent"                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" ></ImageButton>
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:visibility="invisible"
+                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
+
+                <ImageButton
+                    android:id="@+id/gmail_login_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/google_g_2015_logo"
+                    android:background="@android:color/transparent"                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" ></ImageButton>
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:visibility="invisible"
+                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
+
+                <ImageButton
+                    android:id="@+id/apple_login_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/apple_black_logo"
+                    android:background="@android:color/transparent"                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1" ></ImageButton>
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:visibility="invisible"
+                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
+            </LinearLayout>
+        </LinearLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:text="or"
+            android:gravity="bottom|center_horizontal"
+            android:textSize="30sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal|bold"
+            android:visibility="visible"></com.google.android.material.textview.MaterialTextView>
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="User Name"
+                    android:layout_weight="1"
+                    android:textSize="20sp"></TextView>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:inputType="text"
+                    ></com.google.android.material.textfield.TextInputEditText>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Password"
+                android:layout_weight="1"
+                android:textSize="20sp"></TextView>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:inputType="text"
+                ></com.google.android.material.textfield.TextInputEditText>
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:layout_gravity="end"
+        android:text="Login"></Button>
+</LinearLayout>
