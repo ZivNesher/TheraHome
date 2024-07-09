@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FinalProject</string>
+    <string name="default_web_client_id">183173926212-g19tu535t88rfbofbc0t9m27laqukr5m.apps.googleusercontent.com</string>
+    <string name="email_login">Email Login</string>
+    <string name="gmail_login">Gmail Login</string>
+    <string name="minimum_password">Password must be at least 6 characters long</string>
+    <string name="auth_failed">Authentication failed. Please check your credentials and try again.</string>
+
 </resources>

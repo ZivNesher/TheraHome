@@ -54,35 +54,6 @@
                     android:layout_weight="1.5"
                     android:visibility="invisible"
                     ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
-                <ImageButton
-                    android:id="@+id/twitter_login_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/twitter_3_logo"
-                    android:background="@android:color/transparent"                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:layout_weight="1" ></ImageButton>
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.3"
-                    android:visibility="invisible"
-                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
-
-                <ImageButton
-                    android:id="@+id/facebook_login_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/facebook_3_logo"
-                    android:background="@android:color/transparent"                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:layout_weight="1" ></ImageButton>
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.3"
-                    android:visibility="invisible"
-                    ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
 
                 <ImageButton
                     android:id="@+id/gmail_login_button"
@@ -100,10 +71,10 @@
                     ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
 
                 <ImageButton
-                    android:id="@+id/apple_login_button"
+                    android:id="@+id/email_login_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/apple_black_logo"
+                    android:src="@drawable/email_icon"
                     android:background="@android:color/transparent"                    android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:layout_weight="1" ></ImageButton>
@@ -135,10 +106,12 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="User Name"
+                    android:text="Email"
                     android:layout_weight="1"
-                    android:textSize="20sp"></TextView>
+                    android:textSize="20sp"
+                    android:gravity="bottom"></TextView>
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_input"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -156,8 +129,10 @@
                 android:layout_height="match_parent"
                 android:text="Password"
                 android:layout_weight="1"
-                android:textSize="20sp"></TextView>
+                android:textSize="20sp"
+                android:gravity="bottom"></TextView>
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -165,10 +140,25 @@
                 ></com.google.android.material.textfield.TextInputEditText>
         </LinearLayout>
     </LinearLayout>
-    <Button
-        android:layout_width="100dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"></LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-        android:layout_gravity="end"
-        android:text="Login"></Button>
+        android:orientation="horizontal">
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"></com.google.android.material.textview.MaterialTextView>
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            android:text="Login"></Button>
+    </LinearLayout>
 </LinearLayout>
