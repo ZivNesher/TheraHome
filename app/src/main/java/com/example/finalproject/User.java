@@ -29,10 +29,5 @@ public class User {
         this.userId = userId;
         this.Email = Email;
     }
-    // todo login
-
-
-    //todo register
-
 }
 

@@ -27,8 +27,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -87,14 +90,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUserData(String username, String password, String firstName, String surName, String age, String weight, String height, String mail) {
-        String userId = usersRef.push().getKey();
+    private void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String age, String weight, String height) {
         String hashedPassword = hashPassword(password);
-        User user = new User(username, hashedPassword, firstName, surName, age, weight, height, userId, mail);
+        User user = new User(username, hashedPassword, firstName, surName, age, weight, height, userId, email);
 
-        if (userId != null) {
-            usersRef.child(userId).setValue(user);
-        }
+        usersRef.child(userId).setValue(user);
     }
 
     private String hashPassword(String password) {
@@ -121,14 +121,15 @@ public class MainActivity extends AppCompatActivity {
         String age = ageEditText.getText().toString().trim();
         String height = heightEditText.getText().toString().trim();
         String weight = weightEditText.getText().toString().trim();
-        String mail = mailEditText.getText().toString().trim();
+        String email = mailEditText.getText().toString().trim();
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password) && password.equals(repassword)) {
             // Save user data to Firebase Realtime Database
-            saveUserData(username, password, firstname, surname, age, weight, height, mail);
+            String userId = usersRef.push().getKey();
+            saveUserData(userId, email, username, password, firstname, surname, age, weight, height);
 
             // Register the user with Firebase Authentication
-            mAuth.createUserWithEmailAndPassword(mail, password)
+            mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -218,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(MainActivity.this, "Login Successful.", Toast.LENGTH_SHORT).show();
-                            loadMainActivity();
+                            checkUserData(user.getUid());
                         } else {
                             // If sign in fails, display a message to the user
                             try {
@@ -276,14 +276,37 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(MainActivity.this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
-                            loadMainActivity();
+                            checkUserData(user.getUid());
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+    }
+
+    private void checkUserData(String userId) {
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
+                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.age) || TextUtils.isEmpty(user.height) ||
+                        TextUtils.isEmpty(user.weight)) {
+                    Intent intent = new Intent(MainActivity.this, ProfileCompletionActivity.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("email", user != null ? user.Email : "");
+                    startActivity(intent);
+                } else {
+                    loadMainActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadMainActivity() {
