@@ -5,7 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ProfileCompletionActivity">
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_for_top"
+        ></ImageView>
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Please fill in the following details"
+        android:textSize="30sp"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal|bold"
+        ></com.google.android.material.textview.MaterialTextView>
     <EditText
         android:id="@+id/username_input"
         android:layout_width="match_parent"

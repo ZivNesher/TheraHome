@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -413,20 +414,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void addRowToTable(String date, int value, String comparison) {
         TableRow newRow = new TableRow(this);
+
+        LinearLayout dateLayout = new LinearLayout(this);
+        dateLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
         TextView dateTextView = new TextView(this);
-        TextView valueTextView = new TextView(this);
-        TextView comparisonTextView = new TextView(this);
-
+        dateTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         dateTextView.setText(date);
-        valueTextView.setText(String.valueOf(value));
-        comparisonTextView.setText(comparison);
+        dateLayout.addView(dateTextView);
 
-        newRow.addView(dateTextView);
-        newRow.addView(valueTextView);
-        newRow.addView(comparisonTextView);
+        LinearLayout valueLayout = new LinearLayout(this);
+        valueLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
+        TextView valueTextView = new TextView(this);
+        valueTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        valueTextView.setText(String.valueOf(value));
+        valueLayout.addView(valueTextView);
+
+        LinearLayout comparisonLayout = new LinearLayout(this);
+        comparisonLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+        TextView comparisonTextView = new TextView(this);
+        comparisonTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        comparisonTextView.setText(comparison);
+        comparisonLayout.addView(comparisonTextView);
+
+        newRow.addView(dateLayout);
+        newRow.addView(valueLayout);
+        newRow.addView(comparisonLayout);
 
         scanTable.addView(newRow);
     }
+
 
     private void loadScanHistory(String userId) {
         userScansRef = usersRef.child(userId).child("scans");

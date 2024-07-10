@@ -26,14 +26,6 @@
         android:layout_weight="2"
         android:visibility="invisible"
         ></com.google.android.material.textview.MaterialTextView>
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:text="Hey, "
-        android:visibility="visible"
-        ></com.google.android.material.textview.MaterialTextView>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -57,14 +49,57 @@
             android:id="@+id/scan_table"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:stretchColumns="1">
             <TableRow>
-                <TextView android:text="Date" android:padding="8dp" />
-                <TextView android:text="Value" android:padding="8dp" />
-                <TextView android:text="Comparison" android:padding="8dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Date"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal|bold"
+                        android:padding="8dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Value"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal|bold"
+                        android:padding="8dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Comparison"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal|bold"
+                        android:padding="8dp" />
+                </LinearLayout>
             </TableRow>
         </TableLayout>
+
     </LinearLayout>
 
 
