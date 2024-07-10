@@ -2,13 +2,25 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,10 +64,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText mailEditText;
     private Button registerButton;
     private Button loginButton;
+    private ImageButton scanButton;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageButton emailButton;
     private ImageButton gmailButton;
+    private DatabaseReference userScansRef;
+    private String lastScanValue = "0"; // To hold the last scan value
+    private TableLayout scanTable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +92,16 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+
         // Check if user is logged in
         showProgressBar();
-        loadLoginScreen();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadLoginScreen();
+            }
+        }, 3000);
+        //loadLoginScreen();
     }
 
     @Override
@@ -311,7 +335,64 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMainActivity() {
         setContentView(R.layout.activity_main);
+
+        // Initialize the scan button and set the click listener
+        scanButton = findViewById(R.id.scan_button);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performScanAndSaveData();
+            }
+        });
+
+        // Initialize the scan table
+        scanTable = findViewById(R.id.scan_table);
+
+        // Load scan history
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            loadScanHistory(currentUser.getUid());
+        }
     }
+
+    private void performScanAndSaveData() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            userScansRef = usersRef.child(userId).child("scans");
+
+            int newValue = getRandomValue();
+            String currentDate = getCurrentDate();
+            String comparisonResult = getComparisonResult(lastScanValue, newValue);
+
+            String scanData = currentDate + ", " + newValue + ", " + comparisonResult;
+            lastScanValue = String.valueOf(newValue); // Update the last scan value
+
+            userScansRef.push().setValue(scanData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        addRowToTable(currentDate, newValue, comparisonResult);
+                        Toast.makeText(MainActivity.this, "Scan data saved successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Failed to save scan data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    private String getComparisonResult(String lastValueStr, int newValue) {
+        int lastValue = Integer.parseInt(lastValueStr);
+        if (newValue > lastValue) {
+            return "+";
+        } else if (newValue < lastValue) {
+            return "-";
+        } else {
+            return "=";
+        }
+    }
+
 
     private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
@@ -320,4 +401,55 @@ public class MainActivity extends AppCompatActivity {
     private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    private int getRandomValue() {
+        Random random = new Random();
+        return 100 + random.nextInt(401); // Random value between 100 and 500
+    }
+
+    private void addRowToTable(String date, int value, String comparison) {
+        TableRow newRow = new TableRow(this);
+        TextView dateTextView = new TextView(this);
+        TextView valueTextView = new TextView(this);
+        TextView comparisonTextView = new TextView(this);
+
+        dateTextView.setText(date);
+        valueTextView.setText(String.valueOf(value));
+        comparisonTextView.setText(comparison);
+
+        newRow.addView(dateTextView);
+        newRow.addView(valueTextView);
+        newRow.addView(comparisonTextView);
+
+        scanTable.addView(newRow);
+    }
+
+    private void loadScanHistory(String userId) {
+        userScansRef = usersRef.child(userId).child("scans");
+        userScansRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot scanSnapshot : dataSnapshot.getChildren()) {
+                    String scanData = scanSnapshot.getValue(String.class);
+                    if (scanData != null) {
+                        String[] parts = scanData.split(", ");
+                        if (parts.length == 3) {
+                            addRowToTable(parts[0], Integer.parseInt(parts[1]), parts[2]);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Failed to load scan history", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }

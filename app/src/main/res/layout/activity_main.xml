@@ -43,7 +43,7 @@
         >
 
         <ImageButton
-            android:id="@+id/twitter_login_button"
+            android:id="@+id/scan_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -53,12 +53,18 @@
             android:padding="40dp"
 
             ></ImageButton>
-        <TextView
+        <TableLayout
+            android:id="@+id/scan_table"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Text View"
-            ></TextView>
+            android:stretchColumns="1">
+            <TableRow>
+                <TextView android:text="Date" android:padding="8dp" />
+                <TextView android:text="Value" android:padding="8dp" />
+                <TextView android:text="Comparison" android:padding="8dp" />
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
 
 
