@@ -149,18 +149,18 @@ public class MainActivity extends AppCompatActivity {
         String email = mailEditText.getText().toString().trim();
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password) && password.equals(repassword)) {
-            // Save user data to Firebase Realtime Database
-            String userId = usersRef.push().getKey();
-            saveUserData(userId, email, username, password, firstname, surname, age, weight, height);
-
-            // Register the user with Firebase Authentication
+            // Register the user with Firebase Authentication first
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Registration successful
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String userId = user.getUid();
+                                saveUserData(userId, email, username, password, firstname, surname, age, weight, height);
                                 Toast.makeText(MainActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                loadLoginScreen();
                             } else {
                                 // Registration failed
                                 Toast.makeText(MainActivity.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void loadLoginScreen() {
         setContentView(R.layout.login_screen);
