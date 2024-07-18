@@ -302,7 +302,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            checkUserData(user.getUid());
+                            String email = acct.getEmail(); // Extract email from GoogleSignInAccount
+                            checkUserData(user.getUid(), email);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -310,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void checkUserData(String userId) {
         usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -334,6 +336,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void checkUserData(String userId, String email) {
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
+                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.age) || TextUtils.isEmpty(user.height) ||
+                        TextUtils.isEmpty(user.weight)) {
+                    Intent intent = new Intent(MainActivity.this, ProfileCompletionActivity.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("email", email); // Pass the email extracted from GoogleSignInAccount
+                    startActivity(intent);
+                } else {
+                    loadMainActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void loadMainActivity() {
         setContentView(R.layout.activity_main);
