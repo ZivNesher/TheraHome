@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String userId = user.getUid();
                                 saveUserData(userId, email, username, password, firstname, surname, age, weight, height);
-                                Toast.makeText(MainActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                sendVerificationEmail(user); // Send verification email
                                 loadLoginScreen();
                             } else {
                                 // Registration failed
@@ -171,6 +171,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void sendVerificationEmail(FirebaseUser user) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Verification email sent. Please check your email.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
 
 
     private void loadLoginScreen() {
@@ -222,8 +237,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        EditText emailEditText = findViewById(R.id.email_input); // Assuming you have added an EditText with this ID for email
-        EditText passwordEditText = findViewById(R.id.password_input); // Assuming you have added an EditText with this ID for password
+        EditText emailEditText = findViewById(R.id.email_input);
+        EditText passwordEditText = findViewById(R.id.password_input);
 
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -245,7 +260,12 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success
                             FirebaseUser user = mAuth.getCurrentUser();
-                            checkUserData(user.getUid());
+                            if (user.isEmailVerified()) {
+                                checkUserData(user.getUid()); // Call the method that doesn't require the email parameter
+                            } else {
+                                Toast.makeText(MainActivity.this, "Please verify your email address.", Toast.LENGTH_LONG).show();
+                                mAuth.signOut(); // Sign out the user
+                            }
                         } else {
                             // If sign in fails, display a message to the user
                             try {
@@ -264,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
