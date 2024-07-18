@@ -131,7 +131,10 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                         String age = ageEditText.getText().toString().trim();
                         String height = heightEditText.getText().toString().trim();
                         String weight = weightEditText.getText().toString().trim();
-
+                        if(!password.equals(repasswordEditText.getText().toString().trim())) {
+                            Toast.makeText(MainActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         authManager.registerUser(email, password, username, firstName, surName, age, weight, height);
                     }
                 });
