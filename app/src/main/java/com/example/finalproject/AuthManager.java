@@ -27,10 +27,12 @@ public class AuthManager {
     private DatabaseReference usersRef;
     private Context context;
     private UserManagerCallback userManagerCallback;
+    private MainActivity mainActivity;
 
-    public AuthManager(Context context, UserManagerCallback userManagerCallback) {
+    public AuthManager(Context context, UserManagerCallback userManagerCallback, MainActivity mainActivity) {
         this.context = context;
         this.userManagerCallback = userManagerCallback;
+        this.mainActivity = mainActivity;
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -73,6 +75,7 @@ public class AuthManager {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(context, "Verification email sent. Please check your email.", Toast.LENGTH_SHORT).show();
+                            mainActivity.loadLoginScreen();  // Call loadLoginScreen on MainActivity instance
                         } else {
                             Toast.makeText(context, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
                         }

@@ -3,7 +3,6 @@ package com.example.finalproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,11 +21,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements UserManagerCallback {
@@ -47,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private ImageButton emailButton;
     private ImageButton gmailButton;
     private TableLayout scanTable;
+    private ImageButton backButton;
 
     private AuthManager authManager;
     private ScanManager scanManager;
@@ -58,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         setContentView(R.layout.loading_screen);
         progressBar = findViewById(R.id.progressBar);
 
-        authManager = new AuthManager(this,this);
+        authManager = new AuthManager(this, this, this);  // Pass MainActivity instance
         scanManager = new ScanManager(this);
         userManager = new UserManager(this); // Pass the activity as UserManagerCallback
 
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         progressBar.setVisibility(View.GONE);
     }
 
-    private void loadLoginScreen() {
+    public void loadLoginScreen() {
         setContentView(R.layout.login_screen);
         emailButton = findViewById(R.id.email_login_button);
         gmailButton = findViewById(R.id.gmail_login_button);
@@ -108,12 +105,20 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                 passwordEditText = findViewById(R.id.password_input);
                 repasswordEditText = findViewById(R.id.repassword_input);
                 registerButton = findViewById(R.id.register_button);
+                backButton = findViewById(R.id.back_button);
                 surnameEditText = findViewById(R.id.surname_input);
                 firstnameEditText = findViewById(R.id.firstname_input);
                 ageEditText = findViewById(R.id.age_input);
                 heightEditText = findViewById(R.id.height_input);
                 weightEditText = findViewById(R.id.weight_input);
                 emailEditText = findViewById(R.id.email_input);
+
+                backButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadLoginScreen();
+                    }
+                });
 
                 registerButton.setOnClickListener(new View.OnClickListener() {
                     @Override
