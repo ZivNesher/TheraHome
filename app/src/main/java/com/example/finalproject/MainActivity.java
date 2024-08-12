@@ -1,12 +1,20 @@
 package com.example.finalproject;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -197,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showPopUp();
                 scanManager.performScanAndSaveData();
             }
         });
@@ -242,5 +251,62 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         // Add the new row at the top of the table
         scanTable.addView(newRow, 0);
     }
+    public void showPopUp() {
+        // Create the dialog
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.logo_pop_up);
+
+        // Get references to the ImageView and the mask view
+        ImageView logoImageView = dialog.findViewById(R.id.logoImageView);
+        View waterMask = dialog.findViewById(R.id.waterMask);
+
+        // Set up the mask animation to create the water-filling effect
+        ValueAnimator animator = ValueAnimator.ofInt(0, 300); // 100 here represents the height in dp
+        animator.setDuration(3000); // Duration of the animation
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = waterMask.getLayoutParams();
+                layoutParams.height = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics());
+                waterMask.setLayoutParams(layoutParams);
+            }
+        });
+
+        // Add a listener to close the dialog after the animation ends
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // No action needed at the start of the animation
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Close the dialog when the animation ends
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                // Optional: Close the dialog if the animation is canceled
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                // No action needed on animation repeat
+            }
+        });
+
+        // Start the animation
+        animator.start();
+
+        // Show the dialog
+        dialog.show();
+    }
+
+
+
 
 }
