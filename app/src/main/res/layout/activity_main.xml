@@ -45,60 +45,60 @@
             android:padding="40dp"
 
             ></ImageButton>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.18"
+            android:orientation="horizontal"
+            >
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/ic_launcher_background"
+                android:text="Date"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal|bold"
+                android:padding="8dp"
+                ></com.google.android.material.textview.MaterialTextView>
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/ic_launcher_background"
+                android:text="Value"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal|bold"
+                android:padding="8dp"
+                ></com.google.android.material.textview.MaterialTextView>
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/ic_launcher_background"
+                android:text="Comparison"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal|bold"
+                android:padding="8dp"
+                ></com.google.android.material.textview.MaterialTextView>
+        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            >
+
         <TableLayout
             android:id="@+id/scan_table"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.5"
             android:stretchColumns="1">
-            <TableRow>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Date"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium"
-                        android:textStyle="normal|bold"
-                        android:padding="8dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Value"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium"
-                        android:textStyle="normal|bold"
-                        android:padding="8dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Comparison"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium"
-                        android:textStyle="normal|bold"
-                        android:padding="8dp" />
-                </LinearLayout>
-            </TableRow>
         </TableLayout>
+        </ScrollView>
 
     </LinearLayout>
 

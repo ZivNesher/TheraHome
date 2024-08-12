@@ -239,6 +239,8 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         newRow.addView(valueLayout);
         newRow.addView(comparisonLayout);
 
-        scanTable.addView(newRow);
+        // Add the new row at the top of the table
+        scanTable.addView(newRow, 0);
     }
+
 }
