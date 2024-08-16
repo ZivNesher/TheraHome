@@ -13,16 +13,52 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@drawable/high_res_logo"
-        android:layout_weight="15"
-        ></ImageView>
+        android:layout_weight="10"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="App Logo"
+        android:scaleType="fitCenter"
+        android:padding="10dp"/>
+
+    <!-- Welcome Message -->
+    <TextView
+        android:id="@+id/welcome_message"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:text="Welcome to BodySync!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/ic_launcher_background"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        />
+
+    <TextView
+        android:id="@+id/explanation_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:text="We're excited to have you on board! BodySync is your personal companion for optimizing your fitness journey through real-time biofeedback. While we sync everything up, please relax and get ready to elevate your performance."
+        android:textSize="16sp"
+        android:textColor="@color/ic_launcher_background"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:fontFamily="sans-serif-light"
+        android:lineSpacingMultiplier="1.2"
+        />
+
+
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:indeterminate="true"
-        android:layout_weight="2"
         android:visibility="visible"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:paddingTop="20dp"
         />
 
 </LinearLayout>

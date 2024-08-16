@@ -16,7 +16,7 @@
             android:id="@+id/user_name_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name:"
+            android:text="User Name:\t"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
@@ -39,7 +39,7 @@
             android:id="@+id/email_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email:"
+            android:text="Email:\t"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
@@ -62,7 +62,7 @@
             android:id="@+id/age_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Age:"
+            android:text="Age:\t"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
@@ -85,7 +85,7 @@
             android:id="@+id/weight_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weight:"
+            android:text="Weight:\t"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
@@ -108,7 +108,7 @@
             android:id="@+id/height_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Height:"
+            android:text="Height:\t"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView

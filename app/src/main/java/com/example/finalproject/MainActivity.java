@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             public void run() {
                 loadLoginScreen();
             }
-        }, 3000);
+        }, 7000);
     }
 
     @Override
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         progressBar.setVisibility(View.GONE);
     }
 
+    @SuppressLint("WrongViewCast")
     public void loadLoginScreen() {
         setContentView(R.layout.login_screen);
         emailButton = findViewById(R.id.email_login_button);
@@ -162,14 +164,28 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emailEditText = findViewById(R.id.email_input); // Assuming you have added an EditText with this ID for email
-                passwordEditText = findViewById(R.id.password_input); // Assuming you have added an EditText with this ID for password
+                emailEditText = findViewById(R.id.email_input);
+                passwordEditText = findViewById(R.id.password_input);
+
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
+                // Check if email or password fields are empty
+                if (email.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                    return;  // Exit the method to prevent further execution
+                }
+
+                if (password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+                    return;  // Exit the method to prevent further execution
+                }
+
+                // Proceed with login if both fields are filled
                 authManager.loginUser(email, password);
             }
         });
+
     }
 
     private void signInWithGoogle() {
