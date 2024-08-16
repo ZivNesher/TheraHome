@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:background="@android:color/transparent"            android:scaleType="centerInside"
             android:src="@drawable/start_scan_buttonn"
             android:padding="40dp"
@@ -99,6 +99,23 @@
             android:stretchColumns="1">
         </TableLayout>
         </ScrollView>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.01"
+            android:background="@color/ic_launcher_background"
+            ></com.google.android.material.textview.MaterialTextView>
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:background="@android:color/transparent"            android:scaleType="centerInside"
+            android:src="@drawable/burger_menu"
+            android:padding="0dp"
+
+            ></ImageButton>
+
 
     </LinearLayout>
 

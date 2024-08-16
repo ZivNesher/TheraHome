@@ -46,6 +46,14 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         email = getIntent().getStringExtra("email");
 
+        // Populate fields with current user data
+        usernameEditText.setText(getIntent().getStringExtra("username"));
+        surnameEditText.setText(getIntent().getStringExtra("surname"));
+        firstnameEditText.setText(getIntent().getStringExtra("firstname"));
+        ageEditText.setText(getIntent().getStringExtra("age"));
+        heightEditText.setText(getIntent().getStringExtra("height"));
+        weightEditText.setText(getIntent().getStringExtra("weight"));
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +61,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void saveUserData() {
         String username = usernameEditText.getText().toString().trim();

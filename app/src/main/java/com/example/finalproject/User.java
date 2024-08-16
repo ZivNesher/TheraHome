@@ -1,6 +1,8 @@
 package com.example.finalproject;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     public String username;
     public String password;
     public String firstName;
@@ -10,9 +12,6 @@ public class User {
     public String height;
     public String userId;
     public String Email;
-
-
-
 
     // Default constructor required for calls to DataSnapshot.getValue(User.class)
     public User() {
@@ -30,4 +29,3 @@ public class User {
         this.Email = Email;
     }
 }
-
