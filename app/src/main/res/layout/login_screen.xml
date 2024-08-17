@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:text="Welcome"
+            android:text=""
             android:textAlignment="center"
             android:textSize="50sp"
             android:fontFamily="sans-serif-medium"
@@ -39,12 +39,9 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:text="Register to continue"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal|bold"
+            android:layout_weight="0.01"
+            android:background="@color/black"
+            android:gravity="bottom"
             ></com.google.android.material.textview.MaterialTextView>
 
         <LinearLayout
@@ -96,11 +93,22 @@
                     ></com.google.android.material.textfield.MaterialAutoCompleteTextView>
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></LinearLayout>
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:text="Login with Email"
+            android:layout_weight="0.01"
+            android:background="@color/black"
+            android:visibility="visible"></com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:text="Or"
             android:gravity="bottom|center_horizontal"
             android:textSize="30sp"
             android:fontFamily="sans-serif-medium"

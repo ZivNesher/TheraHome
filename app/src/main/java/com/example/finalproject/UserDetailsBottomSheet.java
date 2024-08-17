@@ -49,6 +49,7 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
         }
 
         Button editButton = view.findViewById(R.id.edit_button);
+
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,9 +63,20 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
                 intent.putExtra("height", user.height);
                 intent.putExtra("weight", user.weight);
                 startActivity(intent);
+                dismiss();
             }
         });
-
+        Button logoutButton = view.findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                if (mainActivity != null) {
+                    mainActivity.loadLoginScreen();
+                }
+                dismiss();
+            }
+        });
         return view;
     }
 }
