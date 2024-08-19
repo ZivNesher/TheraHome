@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
@@ -311,8 +312,9 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         ImageView logoImageView = dialog.findViewById(R.id.logoImageView);
         View waterMask = dialog.findViewById(R.id.waterMask);
 
+
         // Set up the mask animation to create the water-filling effect
-        ValueAnimator animator = ValueAnimator.ofInt(0, 300); // 100 here represents the height in dp
+        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
         animator.setDuration(3000); // Duration of the animation
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

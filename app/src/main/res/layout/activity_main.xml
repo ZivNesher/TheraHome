@@ -6,14 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/semi_transparent_ic"
+    >
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/logo_for_top"
         android:layout_weight="10"
-        ></ImageView>
+        android:src="@drawable/bodysync_high_resolution_logo_black_transparent"></ImageView>
+
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,10 +42,10 @@
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="1.1"
-            android:background="@android:color/transparent"            android:scaleType="centerInside"
-            android:src="@drawable/start_scan_buttonn"
+            android:background="@color/semi_transparent_ic"
+            android:scaleType="centerInside"
+            android:src="@drawable/start_scan_high_resolution_logo_white_transparent"
             android:padding="40dp"
-
             ></ImageButton>
         <LinearLayout
             android:layout_width="match_parent"
