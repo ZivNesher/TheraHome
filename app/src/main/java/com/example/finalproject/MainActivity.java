@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         if (data.getDataSetCount() == 0) {
             dataSet = new LineDataSet(new ArrayList<>(), "Scan History");
             dataSet.setColor(getResources().getColor(R.color.main2));
-            dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+            dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
             data.addDataSet(dataSet);
         } else {
             dataSet = (LineDataSet) data.getDataSetByIndex(0);
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
 
         LineDataSet dataSet = new LineDataSet(entries, "Scan History");
         dataSet.setColor(getResources().getColor(R.color.main2));
-        dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+        dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(4f);
         dataSet.setDrawCircles(true);
@@ -364,10 +364,18 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         lineChart.setVisibleXRangeMaximum(10); // Default to showing 10 entries
 
         lineChart.getDescription().setText("Scan Timeline (Date & Time)");
-        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.white));
+        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         lineChart.getAxisRight().setEnabled(false);
 
         lineChart.invalidate();
+
+
+        LimitLine thresholdLine = new LimitLine(100f, "Threshold 100");
+        thresholdLine.setLineColor(getResources().getColor(android.R.color.holo_red_light));
+        thresholdLine.setLineWidth(2f);
+        thresholdLine.enableDashedLine(10f, 10f, 0f); // Dashed line
+
+        lineChart.getAxisLeft().addLimitLine(thresholdLine);
     }
 
 

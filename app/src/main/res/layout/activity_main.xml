@@ -67,26 +67,49 @@
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:padding="2dp">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/btn_last_10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Last 10" />
+                    android:text="Last 10"
+                    android:backgroundTint="@color/main1"
+                    android:textColor="@android:color/black"
+                    android:padding="12dp" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/btn_last_30"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Last 30"
-                    android:layout_marginStart="8dp" />
+                    android:backgroundTint="@color/main1"
+                    android:textColor="@android:color/black"
+                    android:padding="12dp"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/btn_last_100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Last 100"
-                    android:layout_marginStart="8dp" />
+                    android:backgroundTint="@color/main1"
+                    android:textColor="@android:color/black"
+                    android:padding="12dp" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -102,7 +125,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.2"
             android:orientation="horizontal"
             android:scaleType="centerInside"
             >
