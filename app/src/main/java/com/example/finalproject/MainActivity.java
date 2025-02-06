@@ -28,9 +28,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -235,6 +238,16 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
 
         // Initialize the scan button and set the click listener
         scanButton = findViewById(R.id.scan_button);
+        Button btnLast10 = findViewById(R.id.btn_last_10);
+        Button btnLast30 = findViewById(R.id.btn_last_30);
+        Button btnLast100 = findViewById(R.id.btn_last_100);
+
+        btnLast10.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 10));
+        btnLast30.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 30));
+        btnLast100.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 100));
+
+
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -307,20 +320,56 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         lineChart.notifyDataSetChanged();
         lineChart.invalidate();
     }
-    public void displayScanHistoryOnGraph(List<Scan> scans) {
+    public void displayScanHistoryOnGraph(List<Scan> scans, int limit) {
         List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < scans.size(); i++) {
-            entries.add(new Entry(i, scans.get(i).getValue()));
+        List<String> dateLabels = new ArrayList<>();
+
+        // ✅ Limit to last 10, 30, or 100 scans
+        int startIndex = Math.max(0, scans.size() - limit);
+
+        for (int i = startIndex; i < scans.size(); i++) {
+            entries.add(new Entry(i - startIndex, scans.get(i).getValue()));
+            dateLabels.add(scans.get(i).getDate());
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Scan History");
         dataSet.setColor(getResources().getColor(R.color.main2));
         dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+        dataSet.setLineWidth(2f);
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawCircles(true);
+        dataSet.setDrawValues(true);
 
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
+
+        // ✅ Custom X-Axis Formatting
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelRotationAngle(-45); // ✅ Diagonal direction
+
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int index = (int) value;
+                return (index >= 0 && index < dateLabels.size()) ? dateLabels.get(index) : "";
+            }
+        });
+
+        // ✅ Enable Horizontal Scrolling
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleXEnabled(true); // Enable horizontal zoom if needed
+        lineChart.setVisibleXRangeMaximum(10); // Default to showing 10 entries
+
+        lineChart.getDescription().setText("Scan Timeline (Date & Time)");
+        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.white));
+        lineChart.getAxisRight().setEnabled(false);
+
         lineChart.invalidate();
     }
+
 
     public void showPopUp() {
         // Create the dialog

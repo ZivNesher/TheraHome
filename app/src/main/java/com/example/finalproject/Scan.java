@@ -1,5 +1,9 @@
 package com.example.finalproject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Scan {
     private String date;
     private int value;
@@ -26,4 +30,9 @@ public class Scan {
     public String getComparison() {
         return comparison;
     }
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
 }

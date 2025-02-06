@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -23,6 +24,11 @@ public class ScanManager {
     private DatabaseReference userScansRef;
     private Context context;
     private int lastScanValue = 0; // To hold the last scan value
+    private List<Scan> allScans = new ArrayList<>();
+    public List<Scan> getAllScans() {
+        return allScans;
+    }
+
 
     public ScanManager(Context context) {
         this.context = context;
@@ -77,13 +83,13 @@ public class ScanManager {
         userScansRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Scan> scanList = new ArrayList<>();
+                allScans.clear(); // ✅ Clear existing scans before loading new data
                 for (DataSnapshot scanSnapshot : dataSnapshot.getChildren()) {
                     try {
                         // ✅ Try to load as the new structured Scan object
                         Scan scan = scanSnapshot.getValue(Scan.class);
                         if (scan != null) {
-                            scanList.add(scan);
+                            allScans.add(scan);
                         }
                     } catch (Exception e) {
                         // ⚠️ Fallback for old data format (comma-separated string)
@@ -96,7 +102,7 @@ public class ScanManager {
                                     int value = Integer.parseInt(parts[1]);
                                     String comparison = parts[2];
                                     Scan fallbackScan = new Scan(date, value, comparison);
-                                    scanList.add(fallbackScan);
+                                    allScans.add(fallbackScan);
                                 } catch (NumberFormatException nfe) {
                                     Toast.makeText(context, "Invalid scan data format", Toast.LENGTH_SHORT).show();
                                 }
@@ -104,7 +110,8 @@ public class ScanManager {
                         }
                     }
                 }
-                ((MainActivity) context).displayScanHistoryOnGraph(scanList);
+                // ✅ Display the last 10 scans by default
+                ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10);
             }
 
             @Override
