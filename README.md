@@ -11,7 +11,7 @@ This project is a comprehensive user management and scan tracking application. I
    - Google Sign-In
    - Email Verification for New Users
 
-![image](https://github.com/user-attachments/assets/82adf64f-1c00-4b6e-ae7b-59735be11b3d)
+![image](https://github.com/user-attachments/assets/14193de8-999d-4e73-a711-a97f3b59ba74)
 
 
 
@@ -19,7 +19,8 @@ This project is a comprehensive user management and scan tracking application. I
    - Users needs complete their profiles with personal details.
    - Profile information is stored in Firebase Realtime Database.
   
-![image](https://github.com/user-attachments/assets/f4ef40fc-910a-4142-92e5-80a93cff3281)
+![image](https://github.com/user-attachments/assets/de27abfc-73e6-4e3e-b3d7-d037f7ab2d73)
+
 
 
 
@@ -28,7 +29,8 @@ This project is a comprehensive user management and scan tracking application. I
    - Scan data is saved to Firebase Realtime Database.
    - Users can view their scan history.
   
-![image](https://github.com/user-attachments/assets/6125b43d-d16f-4127-a08e-d876bd1418f7)
+![image](https://github.com/user-attachments/assets/163c49cc-da77-4eb5-aef2-e02d47cb038a)
+
 
 
 
