@@ -16,5 +16,5 @@
         android:layout_width="300dp"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:background="@drawable/bodysync_high_resolution_logo_transparent"/>
+        android:background="@color/main1"/>
 </FrameLayout>

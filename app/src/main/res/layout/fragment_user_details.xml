@@ -3,133 +3,164 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/main1">
 
-    <!-- Username Section -->
+    <!-- Profile Information Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/main2"
+        android:layout_marginBottom="10dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/user_name_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name:\t"
+            android:text="User Name"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Name"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <!-- Email Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/main2"
+        android:layout_marginBottom="10dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/email_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email:\t"
+            android:text="Email"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="zivnesher96@gmail.com"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <!-- Age Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/main2"
+        android:layout_marginBottom="10dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/age_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Age:\t"
+            android:text="Age"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="28"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <!-- Weight Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/main2"
+        android:layout_marginBottom="10dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/weight_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weight:\t"
+            android:text="Weight"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="75 kg"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <!-- Height Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/main2"
+        android:layout_marginBottom="10dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/height_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Height:\t"
+            android:text="Height"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="180 cm"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
-    <Button
-        android:id="@+id/edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"
-        android:layout_gravity="start"/>
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:layout_gravity="end"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:backgroundTint="@color/main2"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:backgroundTint="@color/main2"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
+    </LinearLayout>
 </LinearLayout>

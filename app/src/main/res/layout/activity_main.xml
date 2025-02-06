@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,22 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:background="@color/semi_transparent_ic"
-    >
+    android:background="@color/main1"
+    tools:context=".MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:src="@drawable/bodysync_high_resolution_logo_black_transparent"></ImageView>
+        android:src="@drawable/logo_no_background__2_"
+        android:scaleType="fitCenter"
+        android:padding="8dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:background="@color/ic_launcher_background"
-        ></com.google.android.material.textview.MaterialTextView>
+        android:layout_height="wrap_content"
+        android:background="@color/main2"
+        android:text="Welcome to the Dashboard"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:padding="12dp" />
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -33,7 +37,7 @@
         android:layout_height="0dp"
         android:layout_weight="60"
         android:orientation="vertical"
-        android:background="#FFFFFF"
+        android:background="@color/main1"
         >
 
         <ImageButton
@@ -41,57 +45,60 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1.1"
-            android:background="@color/semi_transparent_ic"
+            android:layout_weight="1"
+            android:background="@color/main1"
             android:scaleType="centerInside"
             android:src="@drawable/start_scan_high_resolution_logo_white_transparent"
-            android:padding="40dp"
             ></ImageButton>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.18"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            >
+            android:background="@color/main2"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="@color/main2"
+            android:backgroundTintMode="src_in"
+            android:clipToPadding="false">
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/ic_launcher_background"
                 android:text="Date"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="normal|bold"
-                android:padding="8dp"
-                ></com.google.android.material.textview.MaterialTextView>
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="12dp" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/ic_launcher_background"
                 android:text="Value"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="normal|bold"
-                android:padding="8dp"
-                ></com.google.android.material.textview.MaterialTextView>
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="12dp" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/ic_launcher_background"
                 android:text="Comparison"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="normal|bold"
-                android:padding="8dp"
-                ></com.google.android.material.textview.MaterialTextView>
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="12dp" />
         </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.5"
-            android:background="@color/semi_transparent_ic"
+            android:background="@color/main1"
             >
 
         <TableLayout
@@ -102,26 +109,30 @@
             android:stretchColumns="1">
         </TableLayout>
         </ScrollView>
-        <com.google.android.material.textview.MaterialTextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.01"
-            android:background="@color/ic_launcher_background"
-            ></com.google.android.material.textview.MaterialTextView>
-        <ImageButton
-            android:id="@+id/menu"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:background="@android:color/transparent"            android:scaleType="centerInside"
-            android:src="@drawable/burger_menu"
-            android:padding="0dp"
+            android:layout_weight="0.3"
+            android:orientation="horizontal"
+            android:scaleType="centerInside"
+            >
+            <ImageButton
+                android:id="@+id/menu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:backgroundTint="#5C1A365D"
+                android:scaleType="centerInside"
+                android:src="@drawable/burger_menu"
+                android:contentDescription="Menu" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                />
 
-            ></ImageButton>
-
-
+        </LinearLayout>
     </LinearLayout>
-
 
 
 </LinearLayout>
