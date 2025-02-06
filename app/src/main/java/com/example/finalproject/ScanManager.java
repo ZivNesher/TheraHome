@@ -25,10 +25,10 @@ public class ScanManager {
     private Context context;
     private int lastScanValue = 0; // To hold the last scan value
     private List<Scan> allScans = new ArrayList<>();
+
     public List<Scan> getAllScans() {
         return allScans;
     }
-
 
     public ScanManager(Context context) {
         this.context = context;
@@ -49,7 +49,8 @@ public class ScanManager {
 
             userScansRef.push().setValue(scan).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    ((MainActivity) context).addScanToGraph(scan); // Update graph instead of table
+                    allScans.add(scan); // ✅ Add new scan to the global list
+                    ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10); // ✅ Refresh graph
                     Toast.makeText(context, "Scan data saved successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Failed to save scan data", Toast.LENGTH_SHORT).show();
@@ -69,7 +70,7 @@ public class ScanManager {
     }
 
     private String getCurrentDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
         return sdf.format(new Date());
     }
 
@@ -86,13 +87,11 @@ public class ScanManager {
                 allScans.clear(); // ✅ Clear existing scans before loading new data
                 for (DataSnapshot scanSnapshot : dataSnapshot.getChildren()) {
                     try {
-                        // ✅ Try to load as the new structured Scan object
                         Scan scan = scanSnapshot.getValue(Scan.class);
                         if (scan != null) {
                             allScans.add(scan);
                         }
                     } catch (Exception e) {
-                        // ⚠️ Fallback for old data format (comma-separated string)
                         String scanData = scanSnapshot.getValue(String.class);
                         if (scanData != null) {
                             String[] parts = scanData.split(", ");
@@ -110,8 +109,7 @@ public class ScanManager {
                         }
                     }
                 }
-                // ✅ Display the last 10 scans by default
-                ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10);
+                ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10); // ✅ Display the latest scans
             }
 
             @Override
@@ -120,5 +118,4 @@ public class ScanManager {
             }
         });
     }
-
 }

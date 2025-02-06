@@ -45,8 +45,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements UserManagerCallback {
     private static final int RC_SIGN_IN = 9001;
@@ -324,17 +331,44 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         List<Entry> entries = new ArrayList<>();
         List<String> dateLabels = new ArrayList<>();
 
-        // ✅ Limit to last 10, 30, or 100 scans
         int startIndex = Math.max(0, scans.size() - limit);
 
-        for (int i = startIndex; i < scans.size(); i++) {
-            entries.add(new Entry(i - startIndex, scans.get(i).getValue()));
-            dateLabels.add(scans.get(i).getDate());
+        if (limit == 10) {
+            // ✅ Show the last 10 scans individually
+            for (int i = startIndex; i < scans.size(); i++) {
+                entries.add(new Entry(i - startIndex, scans.get(i).getValue()));
+                dateLabels.add(scans.get(i).getDate());
+            }
+        } else {
+            // ✅ For 30 and 100: Show 10 dots, each representing the mean of N scans
+            int groupSize = (limit == 30) ? 3 : 10;  // Group size based on the button clicked
+
+            // Ensure we have enough scans to create full groups
+            int totalGroups = 10;
+            int scansPerGroup = groupSize;
+            int scansToConsider = totalGroups * scansPerGroup;
+            int adjustedStartIndex = Math.max(0, scans.size() - scansToConsider);
+
+            for (int i = adjustedStartIndex; i < scans.size(); i += scansPerGroup) {
+                int sum = 0;
+                int count = 0;
+
+                for (int j = i; j < i + scansPerGroup && j < scans.size(); j++) {
+                    sum += scans.get(j).getValue();
+                    count++;
+                }
+
+                if (count > 0) {
+                    float mean = (float) sum / count;
+                    entries.add(new Entry(entries.size(), mean)); // X-axis: index, Y-axis: mean
+                    dateLabels.add(scans.get(i).getDate());       // Label with the first scan date in the group
+                }
+            }
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Scan History");
+        LineDataSet dataSet = new LineDataSet(entries, limit == 10 ? "Last 10 Scans" : "Grouped Averages");
         dataSet.setColor(getResources().getColor(R.color.main2));
-        dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(4f);
         dataSet.setDrawCircles(true);
@@ -348,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
-        xAxis.setLabelRotationAngle(-45); // ✅ Diagonal direction
+        xAxis.setLabelRotationAngle(-45); // Diagonal labels
 
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
@@ -358,19 +392,14 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             }
         });
 
-        // ✅ Enable Horizontal Scrolling
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleXEnabled(true); // Enable horizontal zoom if needed
-        lineChart.setVisibleXRangeMaximum(10); // Default to showing 10 entries
-
-        lineChart.getDescription().setText("Scan Timeline (Date & Time)");
-        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        lineChart.getDescription().setText(limit == 10 ? "Last 10 Scans" : "Grouped Averages");
+        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.white));
         lineChart.getAxisRight().setEnabled(false);
 
         lineChart.invalidate();
 
 
-        LimitLine thresholdLine = new LimitLine(100f, "Threshold 100");
+        LimitLine thresholdLine = new LimitLine(300f, "Threshold 300");
         thresholdLine.setLineColor(getResources().getColor(android.R.color.holo_red_light));
         thresholdLine.setLineWidth(2f);
         thresholdLine.enableDashedLine(10f, 10f, 0f); // Dashed line
