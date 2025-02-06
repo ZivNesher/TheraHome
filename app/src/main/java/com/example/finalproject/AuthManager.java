@@ -89,27 +89,28 @@ public class AuthManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (user.isEmailVerified()) {
-                                UserManager userManager = new UserManager(userManagerCallback);
-                                userManager.checkUserData(user.getUid(), context);
+                            if (user != null) {
+                                user.reload().addOnCompleteListener(reloadTask -> {
+                                    if (user.isEmailVerified()) {
+                                        UserManager userManager = new UserManager(userManagerCallback);
+                                        userManager.checkUserData(user.getUid(), context); // Use user.getUid() here
+                                    } else {
+                                        Toast.makeText(context, "Please verify your email address.", Toast.LENGTH_LONG).show();
+                                        mAuth.signOut();
+                                    }
+                                });
                             } else {
-                                Toast.makeText(context, "Please verify your email address.", Toast.LENGTH_LONG).show();
-                                mAuth.signOut(); // Sign out the user
+                                Toast.makeText(context, "Authentication succeeded, but user is null.", Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            // If sign in fails, display a message to the user
                             try {
                                 throw task.getException();
                             } catch (FirebaseAuthInvalidCredentialsException e) {
-                                // Invalid password
-                                Toast.makeText(context, "Invalid password. Please try again.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Invalid password.", Toast.LENGTH_LONG).show();
                             } catch (FirebaseAuthInvalidUserException e) {
-                                // Invalid email
-                                Toast.makeText(context, "Invalid email. Please try again.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Invalid email.", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
-                                // Other errors
                                 Toast.makeText(context, context.getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                             }
                         }
