@@ -36,7 +36,7 @@ public class UserManager {
                         TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.age) || TextUtils.isEmpty(user.height) ||
                         TextUtils.isEmpty(user.weight)) {
                     Intent intent = new Intent(context, ProfileCompletionActivity.class);
-                    intent.putExtra("userId", userId);
+                    intent.putExtra("userId", userId != null ? userId : "");  // Ensure userId isn't null
                     intent.putExtra("email", user != null ? user.Email : "");
                     context.startActivity(intent);
                 } else {

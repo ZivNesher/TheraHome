@@ -7,19 +7,28 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 public class ScanManager {
     private DatabaseReference userScansRef;
     private Context context;
-    private String lastScanValue = "0"; // To hold the last scan value
+    private int lastScanValue = 0; // To hold the last scan value
+    private List<Scan> allScans = new ArrayList<>();
+    public List<Scan> getAllScans() {
+        return allScans;
+    }
+
 
     public ScanManager(Context context) {
         this.context = context;
@@ -35,12 +44,12 @@ public class ScanManager {
             String currentDate = getCurrentDate();
             String comparisonResult = getComparisonResult(lastScanValue, newValue);
 
-            String scanData = currentDate + ", " + newValue + ", " + comparisonResult;
-            lastScanValue = String.valueOf(newValue); // Update the last scan value
+            Scan scan = new Scan(currentDate, newValue, comparisonResult);
+            lastScanValue = newValue; // Update the last scan value
 
-            userScansRef.push().setValue(scanData).addOnCompleteListener(task -> {
+            userScansRef.push().setValue(scan).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    ((MainActivity) context).addRowToTable(currentDate, newValue, comparisonResult);
+                    ((MainActivity) context).addScanToGraph(scan); // Update graph instead of table
                     Toast.makeText(context, "Scan data saved successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Failed to save scan data", Toast.LENGTH_SHORT).show();
@@ -49,8 +58,7 @@ public class ScanManager {
         }
     }
 
-    private String getComparisonResult(String lastValueStr, int newValue) {
-        int lastValue = Integer.parseInt(lastValueStr);
+    private String getComparisonResult(int lastValue, int newValue) {
         if (newValue > lastValue) {
             return "+";
         } else if (newValue < lastValue) {
@@ -74,22 +82,43 @@ public class ScanManager {
         userScansRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("scans");
         userScansRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
-                for (com.google.firebase.database.DataSnapshot scanSnapshot : dataSnapshot.getChildren()) {
-                    String scanData = scanSnapshot.getValue(String.class);
-                    if (scanData != null) {
-                        String[] parts = scanData.split(", ");
-                        if (parts.length == 3) {
-                            ((MainActivity) context).addRowToTable(parts[0], Integer.parseInt(parts[1]), parts[2]);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                allScans.clear(); // ✅ Clear existing scans before loading new data
+                for (DataSnapshot scanSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        // ✅ Try to load as the new structured Scan object
+                        Scan scan = scanSnapshot.getValue(Scan.class);
+                        if (scan != null) {
+                            allScans.add(scan);
+                        }
+                    } catch (Exception e) {
+                        // ⚠️ Fallback for old data format (comma-separated string)
+                        String scanData = scanSnapshot.getValue(String.class);
+                        if (scanData != null) {
+                            String[] parts = scanData.split(", ");
+                            if (parts.length == 3) {
+                                try {
+                                    String date = parts[0];
+                                    int value = Integer.parseInt(parts[1]);
+                                    String comparison = parts[2];
+                                    Scan fallbackScan = new Scan(date, value, comparison);
+                                    allScans.add(fallbackScan);
+                                } catch (NumberFormatException nfe) {
+                                    Toast.makeText(context, "Invalid scan data format", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 }
+                // ✅ Display the last 10 scans by default
+                ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10);
             }
 
             @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(context, "Failed to load scan history", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 }

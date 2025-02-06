@@ -27,6 +27,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +44,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements UserManagerCallback {
     private static final int RC_SIGN_IN = 9001;
@@ -55,9 +65,8 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private ImageButton scanButton;
     private ImageButton emailButton;
     private ImageButton gmailButton;
-    private TableLayout scanTable;
     private ImageButton backButton;
-
+    private LineChart lineChart;
     private AuthManager authManager;
     private ScanManager scanManager;
     private UserManager userManager;
@@ -220,8 +229,25 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     public void loadMainActivity() {
         setContentView(R.layout.activity_main);
 
+        // ✅ Initialize the LineChart before loading scan history
+        lineChart = findViewById(R.id.line_chart);
+        if (lineChart == null) {
+            Toast.makeText(this, "Chart not initialized. Check layout ID!", Toast.LENGTH_SHORT).show();
+            return; // Prevents further execution if the chart is not found
+        }
+
         // Initialize the scan button and set the click listener
         scanButton = findViewById(R.id.scan_button);
+        Button btnLast10 = findViewById(R.id.btn_last_10);
+        Button btnLast30 = findViewById(R.id.btn_last_30);
+        Button btnLast100 = findViewById(R.id.btn_last_100);
+
+        btnLast10.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 10));
+        btnLast30.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 30));
+        btnLast100.setOnClickListener(v -> displayScanHistoryOnGraph(scanManager.getAllScans(), 100));
+
+
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                 scanManager.performScanAndSaveData();
             }
         });
+
         // Initialize the burger menu button and set the click listener
         ImageButton burgerMenuButton = findViewById(R.id.menu);
         burgerMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -262,47 +289,96 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             }
         });
 
-        // Initialize the scan table
-        scanTable = findViewById(R.id.scan_table);
-
-        // Load scan history
+        // ✅ Load scan history after initializing the LineChart
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             scanManager.loadScanHistory(currentUser.getUid());
         }
     }
 
-    public void addRowToTable(String date, int value, String comparison) {
-        TableRow newRow = new TableRow(this);
 
-        LinearLayout dateLayout = new LinearLayout(this);
-        dateLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-        TextView dateTextView = new TextView(this);
-        dateTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        dateTextView.setText(date);
-        dateLayout.addView(dateTextView);
+    public void addScanToGraph(Scan scan) {
+        LineData data = lineChart.getData();
+        if (data == null) {
+            data = new LineData();
+            lineChart.setData(data);
+        }
 
-        LinearLayout valueLayout = new LinearLayout(this);
-        valueLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-        TextView valueTextView = new TextView(this);
-        valueTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        valueTextView.setText(String.valueOf(value));
-        valueLayout.addView(valueTextView);
+        LineDataSet dataSet;
+        if (data.getDataSetCount() == 0) {
+            dataSet = new LineDataSet(new ArrayList<>(), "Scan History");
+            dataSet.setColor(getResources().getColor(R.color.main2));
+            dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            data.addDataSet(dataSet);
+        } else {
+            dataSet = (LineDataSet) data.getDataSetByIndex(0);
+        }
 
-        LinearLayout comparisonLayout = new LinearLayout(this);
-        comparisonLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-        TextView comparisonTextView = new TextView(this);
-        comparisonTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        comparisonTextView.setText(comparison);
-        comparisonLayout.addView(comparisonTextView);
-
-        newRow.addView(dateLayout);
-        newRow.addView(valueLayout);
-        newRow.addView(comparisonLayout);
-
-        // Add the new row at the top of the table
-        scanTable.addView(newRow, 0);
+        int index = dataSet.getEntryCount();
+        data.addEntry(new Entry(index, scan.getValue()), 0);
+        data.notifyDataChanged();
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
     }
+    public void displayScanHistoryOnGraph(List<Scan> scans, int limit) {
+        List<Entry> entries = new ArrayList<>();
+        List<String> dateLabels = new ArrayList<>();
+
+        // ✅ Limit to last 10, 30, or 100 scans
+        int startIndex = Math.max(0, scans.size() - limit);
+
+        for (int i = startIndex; i < scans.size(); i++) {
+            entries.add(new Entry(i - startIndex, scans.get(i).getValue()));
+            dateLabels.add(scans.get(i).getDate());
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Scan History");
+        dataSet.setColor(getResources().getColor(R.color.main2));
+        dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        dataSet.setLineWidth(2f);
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawCircles(true);
+        dataSet.setDrawValues(true);
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+
+        // ✅ Custom X-Axis Formatting
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelRotationAngle(-45); // ✅ Diagonal direction
+
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int index = (int) value;
+                return (index >= 0 && index < dateLabels.size()) ? dateLabels.get(index) : "";
+            }
+        });
+
+        // ✅ Enable Horizontal Scrolling
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleXEnabled(true); // Enable horizontal zoom if needed
+        lineChart.setVisibleXRangeMaximum(10); // Default to showing 10 entries
+
+        lineChart.getDescription().setText("Scan Timeline (Date & Time)");
+        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        lineChart.getAxisRight().setEnabled(false);
+
+        lineChart.invalidate();
+
+
+        LimitLine thresholdLine = new LimitLine(100f, "Threshold 100");
+        thresholdLine.setLineColor(getResources().getColor(android.R.color.holo_red_light));
+        thresholdLine.setLineWidth(2f);
+        thresholdLine.enableDashedLine(10f, 10f, 0f); // Dashed line
+
+        lineChart.getAxisLeft().addLimitLine(thresholdLine);
+    }
+
+
     public void showPopUp() {
         // Create the dialog
         Dialog dialog = new Dialog(this);
