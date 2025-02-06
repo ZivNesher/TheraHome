@@ -27,6 +27,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +41,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements UserManagerCallback {
     private static final int RC_SIGN_IN = 9001;
@@ -55,9 +62,8 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private ImageButton scanButton;
     private ImageButton emailButton;
     private ImageButton gmailButton;
-    private TableLayout scanTable;
     private ImageButton backButton;
-
+    private LineChart lineChart;
     private AuthManager authManager;
     private ScanManager scanManager;
     private UserManager userManager;
@@ -220,6 +226,13 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     public void loadMainActivity() {
         setContentView(R.layout.activity_main);
 
+        // ✅ Initialize the LineChart before loading scan history
+        lineChart = findViewById(R.id.line_chart);
+        if (lineChart == null) {
+            Toast.makeText(this, "Chart not initialized. Check layout ID!", Toast.LENGTH_SHORT).show();
+            return; // Prevents further execution if the chart is not found
+        }
+
         // Initialize the scan button and set the click listener
         scanButton = findViewById(R.id.scan_button);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -229,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                 scanManager.performScanAndSaveData();
             }
         });
+
         // Initialize the burger menu button and set the click listener
         ImageButton burgerMenuButton = findViewById(R.id.menu);
         burgerMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -262,47 +276,52 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             }
         });
 
-        // Initialize the scan table
-        scanTable = findViewById(R.id.scan_table);
-
-        // Load scan history
+        // ✅ Load scan history after initializing the LineChart
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             scanManager.loadScanHistory(currentUser.getUid());
         }
     }
 
-    public void addRowToTable(String date, int value, String comparison) {
-        TableRow newRow = new TableRow(this);
 
-        LinearLayout dateLayout = new LinearLayout(this);
-        dateLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-        TextView dateTextView = new TextView(this);
-        dateTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        dateTextView.setText(date);
-        dateLayout.addView(dateTextView);
+    public void addScanToGraph(Scan scan) {
+        LineData data = lineChart.getData();
+        if (data == null) {
+            data = new LineData();
+            lineChart.setData(data);
+        }
 
-        LinearLayout valueLayout = new LinearLayout(this);
-        valueLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-        TextView valueTextView = new TextView(this);
-        valueTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        valueTextView.setText(String.valueOf(value));
-        valueLayout.addView(valueTextView);
+        LineDataSet dataSet;
+        if (data.getDataSetCount() == 0) {
+            dataSet = new LineDataSet(new ArrayList<>(), "Scan History");
+            dataSet.setColor(getResources().getColor(R.color.main2));
+            dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+            data.addDataSet(dataSet);
+        } else {
+            dataSet = (LineDataSet) data.getDataSetByIndex(0);
+        }
 
-        LinearLayout comparisonLayout = new LinearLayout(this);
-        comparisonLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-        TextView comparisonTextView = new TextView(this);
-        comparisonTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        comparisonTextView.setText(comparison);
-        comparisonLayout.addView(comparisonTextView);
-
-        newRow.addView(dateLayout);
-        newRow.addView(valueLayout);
-        newRow.addView(comparisonLayout);
-
-        // Add the new row at the top of the table
-        scanTable.addView(newRow, 0);
+        int index = dataSet.getEntryCount();
+        data.addEntry(new Entry(index, scan.getValue()), 0);
+        data.notifyDataChanged();
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
     }
+    public void displayScanHistoryOnGraph(List<Scan> scans) {
+        List<Entry> entries = new ArrayList<>();
+        for (int i = 0; i < scans.size(); i++) {
+            entries.add(new Entry(i, scans.get(i).getValue()));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Scan History");
+        dataSet.setColor(getResources().getColor(R.color.main2));
+        dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        lineChart.invalidate();
+    }
+
     public void showPopUp() {
         // Create the dialog
         Dialog dialog = new Dialog(this);
