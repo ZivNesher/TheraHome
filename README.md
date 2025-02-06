@@ -1,4 +1,4 @@
-# Final Project: User Management and Scan Tracking Application
+# TheraHome: User Management and Scan Tracking Application
 
 ## Overview
 
