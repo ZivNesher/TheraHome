@@ -1,12 +1,22 @@
 package com.example.finalproject;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -24,6 +34,9 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements UserManagerCallback {
     private static final int RC_SIGN_IN = 9001;
@@ -66,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             public void run() {
                 loadLoginScreen();
             }
-        }, 3000);
+        }, 7000);
     }
 
     @Override
@@ -87,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         progressBar.setVisibility(View.GONE);
     }
 
+    @SuppressLint("WrongViewCast")
     public void loadLoginScreen() {
         setContentView(R.layout.login_screen);
         emailButton = findViewById(R.id.email_login_button);
@@ -151,14 +165,28 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emailEditText = findViewById(R.id.email_input); // Assuming you have added an EditText with this ID for email
-                passwordEditText = findViewById(R.id.password_input); // Assuming you have added an EditText with this ID for password
+                emailEditText = findViewById(R.id.email_input);
+                passwordEditText = findViewById(R.id.password_input);
+
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
+                // Check if email or password fields are empty
+                if (email.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                    return;  // Exit the method to prevent further execution
+                }
+
+                if (password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+                    return;  // Exit the method to prevent further execution
+                }
+
+                // Proceed with login if both fields are filled
                 authManager.loginUser(email, password);
             }
         });
+
     }
 
     private void signInWithGoogle() {
@@ -197,7 +225,40 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showPopUp();
                 scanManager.performScanAndSaveData();
+            }
+        });
+        // Initialize the burger menu button and set the click listener
+        ImageButton burgerMenuButton = findViewById(R.id.menu);
+        burgerMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    UserManager userManager = new UserManager(new UserManagerCallback() {
+                        @Override
+                        public void loadMainActivity() {
+                            // Not needed here
+                        }
+                    });
+
+                    userManager.usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            if (user != null) {
+                                UserDetailsBottomSheet bottomSheet = UserDetailsBottomSheet.newInstance(user);
+                                bottomSheet.show(getSupportFragmentManager(), "UserDetailsBottomSheet");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -239,6 +300,66 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         newRow.addView(valueLayout);
         newRow.addView(comparisonLayout);
 
-        scanTable.addView(newRow);
+        // Add the new row at the top of the table
+        scanTable.addView(newRow, 0);
     }
+    public void showPopUp() {
+        // Create the dialog
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.logo_pop_up);
+
+        // Get references to the ImageView and the mask view
+        ImageView logoImageView = dialog.findViewById(R.id.logoImageView);
+        View waterMask = dialog.findViewById(R.id.waterMask);
+
+
+        // Set up the mask animation to create the water-filling effect
+        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+        animator.setDuration(3000); // Duration of the animation
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = waterMask.getLayoutParams();
+                layoutParams.height = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics());
+                waterMask.setLayoutParams(layoutParams);
+            }
+        });
+
+        // Add a listener to close the dialog after the animation ends
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // No action needed at the start of the animation
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Close the dialog when the animation ends
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                // Optional: Close the dialog if the animation is canceled
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                // No action needed on animation repeat
+            }
+        });
+
+        // Start the animation
+        animator.start();
+
+        // Show the dialog
+        dialog.show();
+    }
+
+
+
+
 }

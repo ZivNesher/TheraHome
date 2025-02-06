@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfileCompletionActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
@@ -46,6 +49,14 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         email = getIntent().getStringExtra("email");
 
+        // Populate fields with current user data
+        usernameEditText.setText(getIntent().getStringExtra("username"));
+        surnameEditText.setText(getIntent().getStringExtra("surname"));
+        firstnameEditText.setText(getIntent().getStringExtra("firstname"));
+        ageEditText.setText(getIntent().getStringExtra("age"));
+        heightEditText.setText(getIntent().getStringExtra("height"));
+        weightEditText.setText(getIntent().getStringExtra("weight"));
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +64,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void saveUserData() {
         String username = usernameEditText.getText().toString().trim();
@@ -66,8 +78,16 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                 TextUtils.isEmpty(age) || TextUtils.isEmpty(height) || TextUtils.isEmpty(weight)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         } else {
-            User user = new User(username, "", firstname, surname, age, weight, height, userId, email);
-            usersRef.child(userId).setValue(user)
+            // Create a map of fields to update
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("username", username);
+            updates.put("firstName", firstname);
+            updates.put("surName", surname);
+            updates.put("age", age);
+            updates.put("height", height);
+            updates.put("weight", weight);
+
+            usersRef.child(userId).updateChildren(updates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(ProfileCompletionActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
@@ -78,4 +98,5 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                     });
         }
     }
+
 }

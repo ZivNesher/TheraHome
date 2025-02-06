@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class UserManager {
-    private DatabaseReference usersRef;
+    DatabaseReference usersRef;
     private UserManagerCallback callback;
 
     public UserManager(UserManagerCallback callback) {
