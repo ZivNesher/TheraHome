@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
-        android:text="We're excited to have you on board! TheraHome is your personal companion for optimizing your fitness journey through real-time biofeedback. \nWe are syncing everything up."
+        android:text="We're excited to have you on board! TheraHome is your personal companion for optimizing your rehabiliation journey through real-time biofeedback. \nWe are syncing everything up."
         android:textSize="16sp"
         android:textColor="@color/main2"
         android:gravity="center"
