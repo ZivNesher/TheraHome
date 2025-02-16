@@ -22,8 +22,8 @@ public class UserManager {
         this.callback = callback;
     }
 
-    public void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String age, String weight, String height) {
-        User user = new User(username, password, firstName, surName, age, weight, height, userId, email);
+    public void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String dateOfBirth, String weight, String height) {
+        User user = new User(username, password, firstName, surName, dateOfBirth, weight, height, userId, email);
         usersRef.child(userId).setValue(user);
     }
 
@@ -33,8 +33,9 @@ public class UserManager {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
-                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.age) || TextUtils.isEmpty(user.height) ||
-                        TextUtils.isEmpty(user.weight)) {
+                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.dateOfBirth) ||
+                        TextUtils.isEmpty(user.height) || TextUtils.isEmpty(user.weight)) {
+
                     Intent intent = new Intent(context, ProfileCompletionActivity.class);
                     intent.putExtra("userId", userId != null ? userId : "");  // Ensure userId isn't null
                     intent.putExtra("email", user != null ? user.Email : "");
@@ -57,8 +58,9 @@ public class UserManager {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
-                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.age) || TextUtils.isEmpty(user.height) ||
-                        TextUtils.isEmpty(user.weight)) {
+                        TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.dateOfBirth) ||
+                        TextUtils.isEmpty(user.height) || TextUtils.isEmpty(user.weight)) {
+
                     Intent intent = new Intent(context, ProfileCompletionActivity.class);
                     intent.putExtra("userId", userId);
                     intent.putExtra("email", email); // Pass the email extracted from GoogleSignInAccount

@@ -43,13 +43,19 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
             userNameTextView.setText(user.username);
             emailTextView.setText(user.Email);
-            ageTextView.setText(user.age);
             weightTextView.setText(user.weight);
             heightTextView.setText(user.height);
+
+            // Calculate age dynamically and display it
+            int calculatedAge = user.getAge();
+            if (calculatedAge >= 0) {
+                ageTextView.setText(String.valueOf(calculatedAge));
+            } else {
+                ageTextView.setText("N/A"); // Handle cases where DOB is missing
+            }
         }
 
         Button editButton = view.findViewById(R.id.edit_button);
-
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +65,14 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
                 intent.putExtra("username", user.username);
                 intent.putExtra("surname", user.surName);
                 intent.putExtra("firstname", user.firstName);
-                intent.putExtra("age", user.age);
+                intent.putExtra("dateOfBirth", user.dateOfBirth);
                 intent.putExtra("height", user.height);
                 intent.putExtra("weight", user.weight);
                 startActivity(intent);
                 dismiss();
             }
         });
+
         Button logoutButton = view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +84,7 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
+
         return view;
     }
 }

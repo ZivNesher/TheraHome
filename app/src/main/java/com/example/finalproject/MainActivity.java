@@ -3,6 +3,7 @@ package com.example.finalproject;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private AuthManager authManager;
     private ScanManager scanManager;
     private UserManager userManager;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +140,18 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                 backButton = findViewById(R.id.back_button);
                 surnameEditText = findViewById(R.id.surname_input);
                 firstnameEditText = findViewById(R.id.firstname_input);
-                ageEditText = findViewById(R.id.age_input);
                 heightEditText = findViewById(R.id.height_input);
                 weightEditText = findViewById(R.id.weight_input);
                 emailEditText = findViewById(R.id.email_input);
+                ageEditText = findViewById(R.id.age_input);
+                calendar = Calendar.getInstance();
+
+                ageEditText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDatePicker();
+                    }
+                });
 
                 backButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -462,6 +472,30 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
 
         // Show the dialog
         dialog.show();
+    }
+    private void showDatePicker() {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    calendar.set(selectedYear, selectedMonth, selectedDay);
+                    updateLabel();
+                },
+                year, month, day
+        );
+
+        // Set maximum date to today (No future dates)
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+        datePickerDialog.show();
+    }
+
+    private void updateLabel() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        ageEditText.setText(sdf.format(calendar.getTime()));
     }
 
 
