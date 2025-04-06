@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class ProfileCompletionActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;
     private EditText surnameEditText;
     private EditText firstnameEditText;
     private EditText dobEditText; // Replacing age field with Date of Birth
@@ -32,13 +31,14 @@ public class ProfileCompletionActivity extends AppCompatActivity {
     private String userId;
     private String email;
     private Calendar calendar; // Used for date selection
+    private EditText IdEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_completion);
 
-        usernameEditText = findViewById(R.id.username_input);
+        IdEditText = findViewById(R.id.id_fill);
         surnameEditText = findViewById(R.id.surname_input);
         firstnameEditText = findViewById(R.id.firstname_input);
         dobEditText = findViewById(R.id.age_input); // Updated field
@@ -54,10 +54,10 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
 
         // Populate fields with current user data
-        usernameEditText.setText(getIntent().getStringExtra("username"));
+        IdEditText.setText(getIntent().getStringExtra("ID"));
         surnameEditText.setText(getIntent().getStringExtra("surname"));
         firstnameEditText.setText(getIntent().getStringExtra("firstname"));
-        dobEditText.setText(getIntent().getStringExtra("dateOfBirth")); // Changed from age to dateOfBirth
+        dobEditText.setText(getIntent().getStringExtra("dateOfBirth"));
         heightEditText.setText(getIntent().getStringExtra("height"));
         weightEditText.setText(getIntent().getStringExtra("weight"));
 
@@ -95,20 +95,20 @@ public class ProfileCompletionActivity extends AppCompatActivity {
     }
 
     private void saveUserData() {
-        String username = usernameEditText.getText().toString().trim();
+        String Id = IdEditText.getText().toString().trim();
         String surname = surnameEditText.getText().toString().trim();
         String firstname = firstnameEditText.getText().toString().trim();
         String dateOfBirth = dobEditText.getText().toString().trim();
         String height = heightEditText.getText().toString().trim();
         String weight = weightEditText.getText().toString().trim();
 
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(surname) || TextUtils.isEmpty(firstname) ||
+        if (TextUtils.isEmpty(Id) || TextUtils.isEmpty(surname) || TextUtils.isEmpty(firstname) ||
                 TextUtils.isEmpty(dateOfBirth) || TextUtils.isEmpty(height) || TextUtils.isEmpty(weight)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         } else {
             // Create a map of fields to update
             Map<String, Object> updates = new HashMap<>();
-            updates.put("username", username);
+            updates.put("Id", Id);
             updates.put("firstName", firstname);
             updates.put("surName", surname);
             updates.put("dateOfBirth", dateOfBirth); // Save dateOfBirth instead of age

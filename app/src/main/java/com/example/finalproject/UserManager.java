@@ -22,17 +22,27 @@ public class UserManager {
         this.callback = callback;
     }
 
-    public void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String dateOfBirth, String weight, String height) {
-        User user = new User(username, password, firstName, surName, dateOfBirth, weight, height, userId, email);
-        usersRef.child(userId).setValue(user);
+    public void saveUserData(String userId, String email, String Id, String password, String firstName, String surName, String dateOfBirth, String weight, String height) {
+        User user = new User(userId, email, Id, password, firstName, surName, dateOfBirth, weight, height);
+        usersRef.child(userId).setValue(user).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText((Context) callback, "User data saved successfully.", Toast.LENGTH_SHORT).show();
+                callback.loadMainActivity();  // only go to main screen AFTER save is confirmed
+            } else {
+                Toast.makeText((Context) callback, "Failed to save user data: " + task.getException(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
+
+
 
     public void checkUserData(String userId, Context context) {
         usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
+                if (user == null || TextUtils.isEmpty(user.Id) || TextUtils.isEmpty(user.firstName) ||
                         TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.dateOfBirth) ||
                         TextUtils.isEmpty(user.height) || TextUtils.isEmpty(user.weight)) {
 
@@ -57,7 +67,7 @@ public class UserManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
+                if (user == null || TextUtils.isEmpty(user.Id) || TextUtils.isEmpty(user.firstName) ||
                         TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.dateOfBirth) ||
                         TextUtils.isEmpty(user.height) || TextUtils.isEmpty(user.weight)) {
 

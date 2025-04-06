@@ -30,7 +30,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private ProgressBar progressBar;
     private EditText emailEditText;
     private EditText passwordEditText;
-    private EditText usernameEditText;
+    private EditText IdEditText;
     private EditText repasswordEditText;
     private EditText surnameEditText;
     private EditText firstnameEditText;
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
 
             private void loadRegisterScreen() {
                 setContentView(R.layout.register_screen);
-                usernameEditText = findViewById(R.id.username_input);
+                IdEditText = findViewById(R.id.id_fill_input);
                 passwordEditText = findViewById(R.id.password_input);
                 repasswordEditText = findViewById(R.id.repassword_input);
                 registerButton = findViewById(R.id.register_button);
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                     public void onClick(View v) {
                         String email = emailEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        String username = usernameEditText.getText().toString().trim();
+                        String Id = IdEditText.getText().toString().trim();
                         String firstName = firstnameEditText.getText().toString().trim();
                         String surName = surnameEditText.getText().toString().trim();
                         String age = ageEditText.getText().toString().trim();
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                             Toast.makeText(MainActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        authManager.registerUser(email, password, username, firstName, surName, age, weight, height);
+                        authManager.registerUser(email, password, Id, firstName, surName, age, weight, height);
                     }
                 });
             }
