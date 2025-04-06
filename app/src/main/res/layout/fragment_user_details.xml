@@ -16,19 +16,19 @@
         android:layout_marginBottom="10dp">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_name_tag"
+            android:id="@+id/id_tag_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name"
+            android:text="ID"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_name"
+            android:id="@+id/id_user_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name"
+            android:text="id_tag"
             android:textSize="18sp"
             android:textColor="@android:color/white" />
     </LinearLayout>

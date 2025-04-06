@@ -22,8 +22,8 @@ public class UserManager {
         this.callback = callback;
     }
 
-    public void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String dateOfBirth, String weight, String height) {
-        User user = new User(username, password, firstName, surName, dateOfBirth, weight, height, userId, email);
+    public void saveUserData(String userId, String email, String username, String password, String firstName, String surName, String dateOfBirth, String weight, String height,String ID) {
+        User user = new User(username, password, firstName, surName, dateOfBirth, weight, height, userId, email, ID);
         usersRef.child(userId).setValue(user);
     }
 
@@ -57,7 +57,7 @@ public class UserManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                if (user == null || TextUtils.isEmpty(user.username) || TextUtils.isEmpty(user.firstName) ||
+                if (user == null || TextUtils.isEmpty(user.id) || TextUtils.isEmpty(user.firstName) ||
                         TextUtils.isEmpty(user.surName) || TextUtils.isEmpty(user.dateOfBirth) ||
                         TextUtils.isEmpty(user.height) || TextUtils.isEmpty(user.weight)) {
 

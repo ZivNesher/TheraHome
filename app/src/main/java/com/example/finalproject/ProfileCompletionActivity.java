@@ -32,6 +32,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
     private String userId;
     private String email;
     private Calendar calendar; // Used for date selection
+    private String IDEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
