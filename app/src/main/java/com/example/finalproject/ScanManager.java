@@ -44,8 +44,6 @@ public class ScanManager {
             userScansRef.push().setValue(scan).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     allScans.add(scan);
-                    // Update your graph in MainActivity
-                    ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10);
                     Toast.makeText(context, "Scan data saved successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Failed to save scan data", Toast.LENGTH_SHORT).show();
@@ -91,8 +89,6 @@ public class ScanManager {
                         // fallback approach if data is stored differently
                     }
                 }
-                // Display the loaded scans on the graph
-                ((MainActivity) context).displayScanHistoryOnGraph(allScans, 10);
             }
 
             @Override

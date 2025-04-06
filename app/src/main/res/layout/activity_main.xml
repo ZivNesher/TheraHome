@@ -52,80 +52,22 @@
             ></ImageButton>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
             android:orientation="horizontal"
-            android:background="@color/main2"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="3dp"
-            android:backgroundTint="@color/main2"
-            android:backgroundTintMode="src_in"
-            android:clipToPadding="false">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="2dp">
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/btn_last_10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last 10"
-                    android:backgroundTint="@color/main1"
-                    android:textColor="@android:color/black"
-                    android:padding="12dp" />
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/btn_last_30"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last 30"
-                    android:backgroundTint="@color/main1"
-                    android:textColor="@android:color/black"
-                    android:padding="12dp"/>
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/btn_last_100"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last 100"
-                    android:backgroundTint="@color/main1"
-                    android:textColor="@android:color/black"
-                    android:padding="12dp" />
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-            </LinearLayout>
+            android:background="@color/main1"
+            android:gravity="center"
+            android:padding="8dp"
+            >
 
         </LinearLayout>
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/line_chart"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.5"
-            android:background="@color/main1"
-            />
+
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.1"
             android:orientation="horizontal"
             android:scaleType="centerInside"
             >
