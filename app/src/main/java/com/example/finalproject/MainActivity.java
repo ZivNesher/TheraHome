@@ -22,6 +22,7 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private ImageButton emailButton;
     private ImageButton gmailButton;
     private ImageButton backButton;
-    private LineChart lineChart;
     private AuthManager authManager;
     private ScanManager scanManager;
     private UserManager userManager;
@@ -267,31 +267,13 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     @Override
     public void loadMainActivity() {
         setContentView(R.layout.activity_main);
-
-        // Initialize the LineChart
-        lineChart = findViewById(R.id.line_chart);
-        if (lineChart == null) {
-            Toast.makeText(this, "Chart not initialized. Check layout ID!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Buttons to filter scans
         scanButton = findViewById(R.id.scan_button);
-        scanButton.setEnabled(false);
+        /*
+        Uncomment the code below to work with the Arduino
+         */
+        //scanButton.setEnabled(false);
 
-        Button btnLast10 = findViewById(R.id.btn_last_10);
-        Button btnLast30 = findViewById(R.id.btn_last_30);
-        Button btnLast100 = findViewById(R.id.btn_last_100);
-
-        // Update graph with last X scans
-        btnLast10.setOnClickListener(v ->
-                displayScanHistoryOnGraph(scanManager.getAllScans(), 10));
-        btnLast30.setOnClickListener(v ->
-                displayScanHistoryOnGraph(scanManager.getAllScans(), 30));
-        btnLast100.setOnClickListener(v ->
-                displayScanHistoryOnGraph(scanManager.getAllScans(), 100));
-
-        // Request BLE permissions if needed
         if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -307,7 +289,29 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         // SCAN button: when pressed, write 0x01 to Arduino (if already connected)
         scanButton.setOnClickListener(v -> {
             showPopUp();
-            writeSwitchCharacteristic((byte) 0x01);
+
+
+            /*
+            enable the code below to work with the Arduino
+             */
+           // writeSwitchCharacteristic((byte) 0x01);
+            //end of Arduino code
+
+            /*
+            enable the code below to test random values
+             */
+            // Randomly generate a value between 0 and 100
+            int randomValue = (int) (Math.random() * 100);
+            Log.d(TAG, "Random EMG value: " + randomValue);
+            scanManager.performScanAndSaveData(randomValue);
+            //end of test code
+
+
+
+
+
+
+
         });
 
         // Burger menu button
@@ -341,12 +345,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         }
     }
 
-    // === BLE METHODS BELOW ===
-
-    /**
-     * Start scanning for BLE devices.
-     * This scan will run for 10 seconds and then show a device picker dialog.
-     */
     private void startBleScan() {
         // Check for required permissions
         if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
@@ -403,10 +401,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         }, 10000);
     }
 
-    /**
-     * Callback for BLE scan results.
-     * Discovered devices are added to a list for user selection.
-     */
     private final ScanCallback scanCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
         @Override
@@ -428,10 +422,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         }
     };
 
-    /**
-     * Displays a dialog listing all discovered BLE devices.
-     * The user can select a device to connect to.
-     */
     private void showDevicePickerDialog() {
         if (discoveredDevices.isEmpty()) {
             Toast.makeText(this, "No BLE devices found", Toast.LENGTH_SHORT).show();
@@ -448,9 +438,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                 .show();
     }
 
-    /**
-     * Connect to the BLE device and discover GATT services.
-     */
     @SuppressLint("MissingPermission")
     private void connectToDevice(BluetoothDevice device) {
         Toast.makeText(this, "Connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
@@ -482,14 +469,16 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                             java.util.UUID.fromString(SWITCH_CHAR_UUID));
                     emgCharacteristic = service.getCharacteristic(
                             java.util.UUID.fromString(EMG_CHAR_UUID));
-
-                    if (switchCharacteristic != null) {
-                        Log.i(TAG, "Switch characteristic ready.");
-                        runOnUiThread(() -> scanButton.setEnabled(true));
-                    } else {
-                        Log.e(TAG, "Switch characteristic not found!");
-                    }
-
+                    /*
+                    enable this code to work with the Arduino
+                     */
+//                    if (switchCharacteristic != null) {
+//                        Log.i(TAG, "Switch characteristic ready.");
+//                        runOnUiThread(() -> scanButton.setEnabled(true));
+//                    } else {
+//                        Log.e(TAG, "Switch characteristic not found!");
+//                    }
+                    // end of Arduino code
                     if (emgCharacteristic != null) {
                         setNotifications(emgCharacteristic, true);
                     }
@@ -509,10 +498,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
             }
         }
     };
-
-    /**
-     * Helper to enable notifications for the given characteristic.
-     */
     @SuppressLint("MissingPermission")
     private void setNotifications(BluetoothGattCharacteristic characteristic, boolean enable) {
         if (bluetoothGatt == null) return;
@@ -529,10 +514,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         }
     }
 
-    /**
-     * Write a single byte command to the switchCharacteristic (2A57).
-     * For "case 1", we write 0x01.
-     */
     private void writeSwitchCharacteristic(byte value) {
         if (switchCharacteristic == null || bluetoothGatt == null) {
             Toast.makeText(this, "Switch characteristic not ready. Did you scan/connect?", Toast.LENGTH_SHORT).show();
@@ -552,125 +533,38 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         }
     }
 
-    // === END BLE METHODS ===
-
-    // === Existing chart & UI logic for your EMG scans ===
-
-    public void addScanToGraph(Scan scan) {
-        LineData data = lineChart.getData();
-        if (data == null) {
-            data = new LineData();
-            lineChart.setData(data);
-        }
-
-        LineDataSet dataSet;
-        if (data.getDataSetCount() == 0) {
-            dataSet = new LineDataSet(new ArrayList<>(), "Scan History");
-            dataSet.setColor(getResources().getColor(R.color.main2));
-            dataSet.setValueTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            data.addDataSet(dataSet);
-        } else {
-            dataSet = (LineDataSet) data.getDataSetByIndex(0);
-        }
-
-        int index = dataSet.getEntryCount();
-        data.addEntry(new Entry(index, scan.getValue()), 0);
-        data.notifyDataChanged();
-        lineChart.notifyDataSetChanged();
-        lineChart.invalidate();
-    }
-
-    public void displayScanHistoryOnGraph(List<Scan> scans, int limit) {
-        List<Entry> entries = new ArrayList<>();
-        List<String> dateLabels = new ArrayList<>();
-
-        int startIndex = Math.max(0, scans.size() - limit);
-
-        if (limit == 10) {
-            for (int i = startIndex; i < scans.size(); i++) {
-                entries.add(new Entry(i - startIndex, scans.get(i).getValue()));
-                dateLabels.add(scans.get(i).getDate());
-            }
-        } else {
-            int groupSize = (limit == 30) ? 3 : 10;
-            int totalGroups = 10;
-            int scansPerGroup = groupSize;
-            int scansToConsider = totalGroups * scansPerGroup;
-            int adjustedStartIndex = Math.max(0, scans.size() - scansToConsider);
-
-            for (int i = adjustedStartIndex; i < scans.size(); i += scansPerGroup) {
-                int sum = 0, count = 0;
-                for (int j = i; j < i + scansPerGroup && j < scans.size(); j++) {
-                    sum += scans.get(j).getValue();
-                    count++;
-                }
-                if (count > 0) {
-                    float mean = (float) sum / count;
-                    entries.add(new Entry(entries.size(), mean));
-                    dateLabels.add(scans.get(i).getDate());
-                }
-            }
-        }
-
-        LineDataSet dataSet = new LineDataSet(entries, (limit == 10) ? "Last 10 Scans" : "Grouped Averages");
-        dataSet.setColor(getResources().getColor(R.color.main2));
-        dataSet.setValueTextColor(getResources().getColor(android.R.color.white));
-        dataSet.setLineWidth(2f);
-        dataSet.setCircleRadius(4f);
-        dataSet.setDrawCircles(true);
-        dataSet.setDrawValues(true);
-
-        LineData lineData = new LineData(dataSet);
-        lineChart.setData(lineData);
-
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelRotationAngle(-45);
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                int index = (int) value;
-                return (index >= 0 && index < dateLabels.size()) ? dateLabels.get(index) : "";
-            }
-        });
-
-        lineChart.getDescription().setText((limit == 10) ? "Last 10 Scans" : "Grouped Averages");
-        lineChart.getDescription().setTextColor(getResources().getColor(android.R.color.white));
-        lineChart.getAxisRight().setEnabled(false);
-        lineChart.invalidate();
-
-        LimitLine thresholdLine = new LimitLine(300f, "Threshold 300");
-        thresholdLine.setLineColor(getResources().getColor(android.R.color.holo_red_light));
-        thresholdLine.setLineWidth(2f);
-        thresholdLine.enableDashedLine(10f, 10f, 0f);
-        lineChart.getAxisLeft().addLimitLine(thresholdLine);
-    }
 
     public void showPopUp() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.logo_pop_up);
         ImageView logoImageView = dialog.findViewById(R.id.logoImageView);
         View waterMask = dialog.findViewById(R.id.waterMask);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+        logoImageView.setVisibility(View.VISIBLE);
+        logoImageView.setAlpha(0.1f);
+        waterMask.setBackgroundColor(Color.parseColor("#AA2196F3"));
+        ValueAnimator animator = ValueAnimator.ofInt(0, 300);
         animator.setDuration(3000);
         animator.addUpdateListener(animation -> {
             int value = (Integer) animation.getAnimatedValue();
             ViewGroup.LayoutParams layoutParams = waterMask.getLayoutParams();
             layoutParams.height = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics());
+                    TypedValue.COMPLEX_UNIT_DIP, value, dialog.getContext().getResources().getDisplayMetrics());
             waterMask.setLayoutParams(layoutParams);
         });
-
         animator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) { }
+
             @Override
-            public void onAnimationEnd(Animator animation) { dialog.dismiss(); }
+            public void onAnimationEnd(Animator animation) {
+                dialog.dismiss();
+            }
+
             @Override
-            public void onAnimationCancel(Animator animation) { dialog.dismiss(); }
+            public void onAnimationCancel(Animator animation) {
+                dialog.dismiss();
+            }
+
             @Override
             public void onAnimationRepeat(Animator animation) { }
         });
@@ -678,6 +572,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         animator.start();
         dialog.show();
     }
+
 
     private void showDatePicker() {
         int year = calendar.get(Calendar.YEAR);
