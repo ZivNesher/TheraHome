@@ -9,7 +9,7 @@
         android:id="@+id/logoImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/logo_grayscale__1_"
+        android:src="@drawable/logo_color__1_"
         android:scaleType="fitCenter"
         android:alpha="0.1"
         android:background="@android:color/transparent" />
