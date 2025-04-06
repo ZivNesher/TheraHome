@@ -30,9 +30,9 @@ public class Scan {
     public String getComparison() {
         return comparison;
     }
+
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
         return sdf.format(new Date());
     }
-
 }
