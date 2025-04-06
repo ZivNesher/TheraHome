@@ -48,7 +48,7 @@ public class AuthManager {
         return mGoogleSignInClient;
     }
 
-    public void registerUser(String email, String password, String username, String firstName, String surName, String age, String weight, String height) {
+    public void registerUser(String email, String password, String Id, String firstName, String surName, String age, String weight, String height) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((MainActivity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -58,7 +58,7 @@ public class AuthManager {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String userId = user.getUid();
                             UserManager userManager = new UserManager(userManagerCallback);
-                            userManager.saveUserData(userId, email, username, password, firstName, surName, age, weight, height);
+                            userManager.saveUserData(userId, email, Id, password, firstName, surName, age, weight, height);
                             sendVerificationEmail(user);
                         } else {
                             // Registration failed
@@ -94,7 +94,7 @@ public class AuthManager {
                                 user.reload().addOnCompleteListener(reloadTask -> {
                                     if (user.isEmailVerified()) {
                                         UserManager userManager = new UserManager(userManagerCallback);
-                                        userManager.checkUserData(user.getUid(), context); // Use user.getUid() here
+                                        userManager.checkUserData(user.getUid(), context);
                                     } else {
                                         Toast.makeText(context, "Please verify your email address.", Toast.LENGTH_LONG).show();
                                         mAuth.signOut();

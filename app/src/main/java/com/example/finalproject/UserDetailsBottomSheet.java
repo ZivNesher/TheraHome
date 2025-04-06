@@ -35,13 +35,13 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
         }
 
         if (user != null) {
-            TextView IDTextView = view.findViewById(R.id.id_value);
+            TextView IDTextView = view.findViewById(R.id.id_user_details);
             TextView emailTextView = view.findViewById(R.id.email);
             TextView ageTextView = view.findViewById(R.id.age);
             TextView weightTextView = view.findViewById(R.id.weight);
             TextView heightTextView = view.findViewById(R.id.height);
 
-            IDTextView.setText(user.ID);
+            IDTextView.setText(user.Id);
             emailTextView.setText(user.Email);
             weightTextView.setText(user.weight);
             heightTextView.setText(user.height);
@@ -67,7 +67,7 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
                 intent.putExtra("dateOfBirth", user.dateOfBirth);
                 intent.putExtra("height", user.height);
                 intent.putExtra("weight", user.weight);
-                intent.putExtra("ID", user.ID);
+                intent.putExtra("ID", user.Id);
                 startActivity(intent);
                 dismiss();
             }

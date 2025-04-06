@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                     public void onClick(View v) {
                         String email = emailEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        String id = IdEditText.getText().toString().trim();
+                        String Id = IdEditText.getText().toString().trim();
                         String firstName = firstnameEditText.getText().toString().trim();
                         String surName = surnameEditText.getText().toString().trim();
                         String age = ageEditText.getText().toString().trim();
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
                             Toast.makeText(MainActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        authManager.registerUser(email, password, id, firstName, surName, age, weight, height);
+                        authManager.registerUser(email, password, Id, firstName, surName, age, weight, height);
                     }
                 });
             }

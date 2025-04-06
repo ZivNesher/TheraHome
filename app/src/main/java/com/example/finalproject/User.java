@@ -14,13 +14,13 @@ public class User implements Serializable {
     public String height;
     public String userId;
     public String Email;
-    public String ID;
+    public String Id;
 
     // Default constructor required for calls to DataSnapshot.getValue(User.class)
     public User() {
     }
 
-    public User(String ID, String password, String firstName, String surName, String dateOfBirth, String weight, String height, String userId, String Email) {
+    public User(String Id, String password, String firstName, String surName, String dateOfBirth, String weight, String height, String userId, String Email) {
         this.password = password;
         this.firstName = firstName;
         this.surName = surName;
@@ -29,7 +29,7 @@ public class User implements Serializable {
         this.height = height;
         this.userId = userId;
         this.Email = Email;
-        this.ID = ID;
+        this.Id = Id;
     }
 
     // Method to calculate age dynamically
