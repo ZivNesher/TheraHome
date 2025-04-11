@@ -29,6 +29,7 @@ This project is a comprehensive user management and scan tracking application. I
    - Scan data is saved to Firebase Realtime Database.
   
 <img width="341" alt="image" src="https://github.com/user-attachments/assets/b39b5399-1e42-41fb-a1cf-1d56d2e14c79" />
+
 ![image](https://github.com/user-attachments/assets/bf83e263-fb9e-499c-a761-886af7ca3dae)
 
 
