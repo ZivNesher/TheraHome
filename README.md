@@ -2,92 +2,96 @@
 
 ## Overview
 
-This project is a comprehensive user management and scan tracking application. It allows users to register, log in using email or Google Sign-In, and complete their profiles. Additionally, users can perform scans, save scan data, and let their therapist view scan history. The application integrates with Firebase for authentication and real-time database functionalities.
+**TheraHome** is a mobile application designed to support physical rehabilitation by tracking muscle activity and enabling therapist-patient interactions. The app allows users to register, log in (via email or Google), complete their profiles, perform EMG-based scans, and share scan data with their therapists in real-time using Firebase.
+
+This project includes:
+- A mobile app for patients  
+- A web portal for therapists  
+- Firebase backend integration
+
+---
 
 ## Features
 
-1. **User Registration and Login:**
-   - Email and Password Registration
-   - Google Sign-In
-   - Email Verification for New Users
+### 1. User Registration and Login
+- Email and password registration
+- Google Sign-In integration
+- Email verification for new users
 
-![image](https://github.com/user-attachments/assets/14193de8-999d-4e73-a711-a97f3b59ba74)
+<img src="https://github.com/user-attachments/assets/14193de8-999d-4e73-a711-a97f3b59ba74" width="300"/>
 
+---
 
+### 2. Profile Completion
+- Users complete their profile with personal details (age, weight, height, etc.)
+- Data is saved in Firebase Realtime Database
 
-2. **Profile Completion:**
-   - Users needs complete their profiles with personal details.
-   - Profile information is stored in Firebase Realtime Database.
-  
-![image](https://github.com/user-attachments/assets/de27abfc-73e6-4e3e-b3d7-d037f7ab2d73)
+<img src="https://github.com/user-attachments/assets/de27abfc-73e6-4e3e-b3d7-d037f7ab2d73" width="300"/>
 
+---
 
+### 3. Scan Tracking
+- Users can perform EMG-based scans using the app
+- Scan data is saved to Firebase and shared with the assigned therapist
 
+<img width="341" alt="Scan Screen" src="https://github.com/user-attachments/assets/b39b5399-1e42-41fb-a1cf-1d56d2e14c79" />
+<img src="https://github.com/user-attachments/assets/bf83e263-fb9e-499c-a761-886af7ca3dae" width="300"/>
 
-3. **Scan Tracking:**
-   - Users can perform scans, The scan will be sent to his therapist so he can check the values.
-   - Scan data is saved to Firebase Realtime Database.
-  
-<img width="341" alt="image" src="https://github.com/user-attachments/assets/b39b5399-1e42-41fb-a1cf-1d56d2e14c79" />
+---
 
-![image](https://github.com/user-attachments/assets/bf83e263-fb9e-499c-a761-886af7ca3dae)
+### 4. Therapist Portal
+- Therapists can log in via a web portal to monitor patient scan data
+- Real-time data retrieval from Firebase
 
+<img width="1332" alt="Portal 1" src="https://github.com/user-attachments/assets/4a1dc6a7-3f76-41ab-9a99-f639d24e4fb5" />
+<img width="1332" alt="Portal 2" src="https://github.com/user-attachments/assets/a815e679-3bdf-47d9-a5b9-a8f6ee30ad9b" />
+<img width="1329" alt="Portal 3" src="https://github.com/user-attachments/assets/598a66d9-45be-4a0b-aa26-824b5a220cfa" />
 
-
-4. **Therapist portal:**
-   - User that his role is therapist, have access to check all patients scans values.
-   - The data is streaming in realtime from firebase.
-  
-<img width="1332" alt="image" src="https://github.com/user-attachments/assets/4a1dc6a7-3f76-41ab-9a99-f639d24e4fb5" /><img width="1332" alt="image" src="https://github.com/user-attachments/assets/a815e679-3bdf-47d9-a5b9-a8f6ee30ad9b" />
-<img width="1329" alt="image" src="https://github.com/user-attachments/assets/598a66d9-45be-4a0b-aa26-824b5a220cfa" />
-
-
-
-
-
-
+---
 
 ## Architecture
 
-The project follows a modular design with separate classes for managing different aspects of the application. This enhances code readability, maintainability, and scalability.
+The project is structured in a modular way, with separate classes managing different functionalities. This promotes clean code organization, readability, and maintainability.
 
 ### Main Components
 
-1. **MainActivity:**
-   - The primary activity that handles user navigation and initial setup.
-   - Manages user login, registration, and Google Sign-In.
+**MainActivity**  
+- Handles login, registration, and user navigation  
+- Integrates Google Sign-In and FirebaseAuth  
 
-2. **ProfileCompletionActivity:**
-   - Allows users to complete their profile with additional information.
-   - Saves user profile data to Firebase.
+**ProfileCompletionActivity**  
+- Prompts users to complete their profile  
+- Saves user data to Firebase  
 
-3. **User:**
-   - A model class representing the user.
-   - Contains user attributes like username, password, first name, surname, age, weight, height, userId, and email.
+**User (Model)**  
+- Represents user data structure  
+- Fields include: `userId`, `email`, `password`, `firstName`, `surName`, `dateOfBirth`, `weight`, `height`  
 
-4. **AuthManager:**
-   - Manages user authentication.
-   - Handles email/password registration, Google Sign-In, and email verification.
+**AuthManager**  
+- Manages authentication logic  
+- Handles email/password registration, Google Sign-In, and email verification  
 
-5. **UserManager:**
-   - Manages user data interactions with Firebase.
-   - Checks if user profile data is complete and handles user data saving.
+**UserManager**  
+- Manages profile data and interaction with Firebase  
+- Checks profile completion status and saves user information  
 
-6. **ScanManager:**
-   - Manages scan-related functionalities.
-   - Handles scan data generation, saving, and retrieval from Firebase.
+**ScanManager**  
+- Manages scan generation, saving, and retrieval  
+- Stores scan data in Firebase under each user  
 
-7. **UserManagerCallback:**
-   - An interface to decouple `UserManager` from the `MainActivity`.
-   - Provides a callback method for loading the main activity.
+**UserManagerCallback**  
+- Interface to decouple logic between `UserManager` and `MainActivity`  
+- Triggers UI updates on successful data saving  
+
+---
 
 ## Firebase Integration
 
-The application uses Firebase for:
+**Authentication**  
+- Email/password login and Google Sign-In  
+- Email verification required for new users  
 
-1. **Authentication:**
-   - Firebase Authentication for email/password login and Google Sign-In.
-   - Email verification for new users.
-
-2. **Database:**
-   - Firebase Realtime Database for storing user profiles and scan data.
+**Realtime Database**  
+- Stores user profile data  
+- Saves scan data under each user's node  
+- Real-time updates for therapist dashboard  
