@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a comprehensive user management and scan tracking application. It allows users to register, log in using email or Google Sign-In, and complete their profiles. Additionally, users can perform scans, save scan data, and view scan history. The application integrates with Firebase for authentication and real-time database functionalities.
+This project is a comprehensive user management and scan tracking application. It allows users to register, log in using email or Google Sign-In, and complete their profiles. Additionally, users can perform scans, save scan data, and let their therapist view scan history. The application integrates with Firebase for authentication and real-time database functionalities.
 
 ## Features
 
@@ -25,11 +25,19 @@ This project is a comprehensive user management and scan tracking application. I
 
 
 3. **Scan Tracking:**
-   - Users can perform scans and compare them with previous scan values. (At this time, the values are generated randomly).
+   - Users can perform scans, The scan will be sent to his therapist so he can check the values.
    - Scan data is saved to Firebase Realtime Database.
-   - Users can view their scan history.
   
-![image](https://github.com/user-attachments/assets/c444fa8e-1fd0-417b-8f53-4259389ee330)
+<img width="341" alt="image" src="https://github.com/user-attachments/assets/b39b5399-1e42-41fb-a1cf-1d56d2e14c79" />
+
+4. **Therapist portal:**
+   - User that his role is therapist, have access to check all patients scans values.
+   - The data is streaming in realtime from firebase.
+  
+<img width="1332" alt="image" src="https://github.com/user-attachments/assets/4a1dc6a7-3f76-41ab-9a99-f639d24e4fb5" /><img width="1332" alt="image" src="https://github.com/user-attachments/assets/a815e679-3bdf-47d9-a5b9-a8f6ee30ad9b" />
+<img width="1329" alt="image" src="https://github.com/user-attachments/assets/598a66d9-45be-4a0b-aa26-824b5a220cfa" />
+
+
 
 
 
