@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,7 +77,7 @@ public class AuthManager {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(context, "Verification email sent. Please check your email.", Toast.LENGTH_SHORT).show();
-                            mainActivity.loadLoginScreen();  // Call loadLoginScreen on MainActivity instance
+                            userManagerCallback.goToLoginScreen();
                         } else {
                             Toast.makeText(context, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
                         }
@@ -137,4 +139,14 @@ public class AuthManager {
                     }
                 });
     }
+    public void handleGoogleSignIn(Intent data) {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            firebaseAuthWithGoogle(account);
+        } catch (ApiException e) {
+            Toast.makeText(context, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

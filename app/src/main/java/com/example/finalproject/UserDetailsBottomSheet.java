@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
     private static final String ARG_USER = "user";
-
     private User user;
 
     public static UserDetailsBottomSheet newInstance(User user) {
@@ -46,43 +46,31 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
             weightTextView.setText(user.weight);
             heightTextView.setText(user.height);
 
-            // Calculate age dynamically and display it
             int calculatedAge = user.getAge();
-            if (calculatedAge >= 0) {
-                ageTextView.setText(String.valueOf(calculatedAge));
-            } else {
-                ageTextView.setText("N/A"); // Handle cases where DOB is missing
-            }
+            ageTextView.setText(calculatedAge >= 0 ? String.valueOf(calculatedAge) : "N/A");
         }
 
         Button editButton = view.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProfileCompletionActivity.class);
-                intent.putExtra("userId", user.userId);
-                intent.putExtra("email", user.Email);
-                intent.putExtra("surname", user.surName);
-                intent.putExtra("firstname", user.firstName);
-                intent.putExtra("dateOfBirth", user.dateOfBirth);
-                intent.putExtra("height", user.height);
-                intent.putExtra("weight", user.weight);
-                intent.putExtra("ID", user.Id);
-                startActivity(intent);
-                dismiss();
-            }
+        editButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileCompletionActivity.class);
+            intent.putExtra("userId", user.userId);
+            intent.putExtra("email", user.Email);
+            intent.putExtra("surname", user.surName);
+            intent.putExtra("firstname", user.firstName);
+            intent.putExtra("dateOfBirth", user.dateOfBirth);
+            intent.putExtra("height", user.height);
+            intent.putExtra("weight", user.weight);
+            intent.putExtra("ID", user.Id);
+            startActivity(intent);
+            dismiss();
         });
 
         Button logoutButton = view.findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                if (mainActivity != null) {
-                    mainActivity.loadLoginScreen();
-                }
-                dismiss();
+        logoutButton.setOnClickListener(v -> {
+            if (getActivity() instanceof UserManagerCallback) {
+                ((UserManagerCallback) getActivity()).goToLoginScreen();  // ✅ Callback instead of direct call
             }
+            dismiss();
         });
 
         return view;
