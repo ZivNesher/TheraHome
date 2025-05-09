@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.bluetooth.*;
 import android.bluetooth.le.*;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -37,6 +36,9 @@ public class BleManager {
     private ImageButton scanBtn;
     private final StringBuilder fileDataBuffer = new StringBuilder();
 
+    private boolean isReceiving = false;
+    private final Handler toastHandler = new Handler(Looper.getMainLooper());
+
     public BleManager(MainActivity activity, ScanManager scanManager) {
         this.activity = activity;
         this.scanManager = scanManager;
@@ -51,20 +53,30 @@ public class BleManager {
             fileDataBuffer.setLength(0); // Clear previous data
 
             if (switchCharacteristic != null) {
+                isReceiving = true;
+                showReceivingToast();
+
                 switchCharacteristic.setValue(new byte[]{4}); // Case 4 = request file
                 @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
                 Log.d("BLE", "Requested Case 4: " + success);
 
                 Toast.makeText(activity, "Requesting file from Arduino...", Toast.LENGTH_SHORT).show();
-
-                // Optional timeout to save file after 6 seconds
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    saveReceivedDataToFile("emg_result.txt");
-                }, 6000);
             } else {
                 Toast.makeText(activity, "Device not ready", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showReceivingToast() {
+        toastHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isReceiving) {
+                    Toast.makeText(activity, "Receiving file...", Toast.LENGTH_SHORT).show();
+                    toastHandler.postDelayed(this, 2000);
+                }
+            }
+        }, 0);
     }
 
     public void startInitialBleScan() {
@@ -83,11 +95,8 @@ public class BleManager {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 UserManager um = new UserManager(new UserManagerCallback() {
-                    @Override
-                    public void loadMainActivity() {}
-
-                    @Override
-                    public void goToLoginScreen() {}
+                    @Override public void loadMainActivity() {}
+                    @Override public void goToLoginScreen() {}
                 });
 
                 um.usersRef.child(user.getUid()).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
@@ -127,8 +136,11 @@ public class BleManager {
 
         devices.clear();
         names.clear();
+        Toast.makeText(activity, "Searching for BLE devices...", Toast.LENGTH_SHORT).show();
 
-        scanner.startScan(null, new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), scanCallback);
+        scanner.startScan(null,
+                new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(),
+                scanCallback);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             scanner.stopScan(scanCallback);
@@ -206,27 +218,30 @@ public class BleManager {
 
                     // Check for end-of-file marker
                     if (chunk.contains("EOF")) {
+                        isReceiving = false;
+                        toastHandler.removeCallbacksAndMessages(null);
                         Log.d("BLE", "EOF detected — saving file.");
                         saveReceivedDataToFile("emg_result.txt");
                     }
                 }
             }
-
         });
     }
 
     private void saveReceivedDataToFile(String filename) {
         try {
+            String cleanData = fileDataBuffer.toString().replace("EOF", "");
+
             File file = new File(activity.getExternalFilesDir(null), filename);
             FileOutputStream fos = new FileOutputStream(file);
-            fos.write(fileDataBuffer.toString().getBytes());
+            fos.write(cleanData.getBytes());
             fos.close();
+
             Log.d("BLE", "File saved: " + file.getAbsolutePath());
 
             activity.runOnUiThread(() ->
                     Toast.makeText(activity, "File saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show()
             );
-            System.out.println("File saved: " + file.getAbsolutePath());
         } catch (IOException e) {
             Log.e("BLE", "Error saving file", e);
         }
