@@ -25,9 +25,12 @@ public class BleManager {
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothGatt gatt;
+    private BluetoothGattCharacteristic switchCharacteristic;
 
     private final List<BluetoothDevice> devices = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
+
+    private ImageButton scanBtn;
 
     public BleManager(MainActivity activity, ScanManager scanManager) {
         this.activity = activity;
@@ -35,15 +38,22 @@ public class BleManager {
     }
 
     public void setupScanButton() {
-        ImageButton scanBtn = activity.findViewById(R.id.scan_button);
+        scanBtn = activity.findViewById(R.id.scan_button);
+        scanBtn.setEnabled(false); // Only enabled after BLE connection
+
         scanBtn.setOnClickListener(v -> {
             LogoPopUpManager.show(activity);
-
-            int randomVal = (int) (Math.random() * 100);
-            Log.d("BLE", "Random EMG: " + randomVal);
-            scanManager.performScanAndSaveData(randomVal);
+            if (switchCharacteristic != null) {
+                switchCharacteristic.setValue(new byte[]{1}); // Case 1
+                @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
+                Log.d("BLE", "Sent case 1 command: " + success);
+            } else {
+                Toast.makeText(activity, "Device not ready", Toast.LENGTH_SHORT).show();
+            }
         });
+    }
 
+    public void startInitialBleScan() {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
                     new String[]{ Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION },
@@ -59,16 +69,10 @@ public class BleManager {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 UserManager um = new UserManager(new UserManagerCallback() {
-                    @Override
-                    public void loadMainActivity() {
-                        // Not needed in this context
-                    }
-
-                    @Override
-                    public void goToLoginScreen() {
-                        // Not needed in this context
-                    }
+                    @Override public void loadMainActivity() {}
+                    @Override public void goToLoginScreen() {}
                 });
+
                 um.usersRef.child(user.getUid()).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                     @Override
                     public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
@@ -112,7 +116,7 @@ public class BleManager {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             scanner.stopScan(scanCallback);
             showDeviceDialog();
-        }, 10000);
+        }, 8000);
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {
@@ -142,6 +146,30 @@ public class BleManager {
 
     @SuppressLint("MissingPermission")
     private void connect(BluetoothDevice device) {
-        gatt = device.connectGatt(activity, false, new BluetoothGattCallback() {});
+        gatt = device.connectGatt(activity, false, new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    Log.d("BLE", "Connected to GATT server.");
+                    gatt.discoverServices();
+                }
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    BluetoothGattService service = gatt.getService(UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb")); // Service UUID
+                    if (service != null) {
+                        switchCharacteristic = service.getCharacteristic(UUID.fromString("00002a57-0000-1000-8000-00805f9b34fb")); // Characteristic UUID
+                        if (switchCharacteristic != null) {
+                            activity.runOnUiThread(() -> {
+                                scanBtn.setEnabled(true);
+                                Toast.makeText(activity, "Device connected. You can now start scan.", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    }
+                }
+            }
+        });
     }
 }

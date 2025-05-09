@@ -43,10 +43,12 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     @Override
     public void loadMainActivity() {
         setContentView(R.layout.activity_main);
-        bleManager.setupScanButton();
+        bleManager.setupScanButton(); // Prepare the scan button (but disabled initially)
         bleManager.loadUserDetailsButton();
         bleManager.loadPreviousScans();
+        bleManager.startInitialBleScan(); // <<< ADD THIS: trigger scan and connection after login
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
