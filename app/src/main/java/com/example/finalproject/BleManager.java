@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -16,6 +18,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +38,15 @@ public class BleManager {
     private final List<String> names = new ArrayList<>();
 
     private ImageButton scanBtn;
+    private Button exercise_1_Btn;
+    private Button exercise_2_Btn;
+    private Button exercise_3_Btn;
+    private Button exercise_4_Btn;
+    private Button exercise_5_Btn;
+    Map<Button, Boolean> buttonStates = new HashMap<>();
     private final StringBuilder fileDataBuffer = new StringBuilder();
+    private int currentExerciseCase = 0;
+
 
     private boolean isReceiving = false;
     private final Handler toastHandler = new Handler(Looper.getMainLooper());
@@ -48,6 +60,20 @@ public class BleManager {
         scanBtn = activity.findViewById(R.id.scan_button);
         scanBtn.setEnabled(false); // Enable only after BLE connection
 
+        // Initialize exercise buttons
+        exercise_1_Btn = activity.findViewById(R.id.start_button_1);
+        exercise_2_Btn = activity.findViewById(R.id.start_button_2);
+        exercise_3_Btn = activity.findViewById(R.id.start_button_3);
+        exercise_4_Btn = activity.findViewById(R.id.start_button_4);
+        exercise_5_Btn = activity.findViewById(R.id.start_button_5);
+
+        // Initialize button state map and disable all buttons
+        for (Button btn : Arrays.asList(exercise_1_Btn, exercise_2_Btn, exercise_3_Btn, exercise_4_Btn, exercise_5_Btn)) {
+            btn.setEnabled(false);
+            buttonStates.put(btn, false);
+        }
+
+        // Scan button action (Case 4)
         scanBtn.setOnClickListener(v -> {
             LogoPopUpManager.show(activity);
             fileDataBuffer.setLength(0); // Clear previous data
@@ -65,7 +91,61 @@ public class BleManager {
                 Toast.makeText(activity, "Device not ready", Toast.LENGTH_SHORT).show();
             }
         });
+
+        View.OnClickListener exerciseClickListener = btn -> {
+            int caseNum = 1;
+            if (btn == exercise_1_Btn) caseNum = 1;
+            else if (btn == exercise_2_Btn) caseNum = 2;
+            else if (btn == exercise_3_Btn) caseNum = 3;
+            else if (btn == exercise_4_Btn) caseNum = 4;
+            else if (btn == exercise_5_Btn) caseNum = 5;
+
+            if (switchCharacteristic != null) {
+                Button clickedBtn = (Button) btn;
+                boolean isActive = buttonStates.get(clickedBtn);
+
+                if (!isActive) {
+                    currentExerciseCase = caseNum;
+                    switchCharacteristic.setValue(new byte[]{(byte) caseNum});
+                    @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
+                    Log.d("BLE", "Started Exercise Case " + caseNum + ": " + success);
+                    Toast.makeText(activity, "Started Exercise " + caseNum, Toast.LENGTH_SHORT).show();
+
+                    clickedBtn.setBackgroundColor(0xFFFF4444); // red
+                    clickedBtn.setText("STOP");
+                    buttonStates.put(clickedBtn, true);
+                } else {
+                    // Stop exercise
+                    fileDataBuffer.setLength(0); // clear previous data
+                    isReceiving = true;
+                    showReceivingToast();
+
+                    switchCharacteristic.setValue(new byte[]{9});
+                    @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
+
+                    Log.d("BLE", "Sent STOP (9): " + success);
+                    Toast.makeText(activity, "Stopped Exercise " + caseNum, Toast.LENGTH_SHORT).show();
+
+                    clickedBtn.setBackgroundColor(0xFF4CAF50); // green
+                    clickedBtn.setText("START");
+                    buttonStates.put(clickedBtn, false);
+                }
+            } else {
+                Toast.makeText(activity, "BLE not ready", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+
+
+        // Assign listeners
+        exercise_1_Btn.setOnClickListener(exerciseClickListener);
+        exercise_2_Btn.setOnClickListener(exerciseClickListener);
+        exercise_3_Btn.setOnClickListener(exerciseClickListener);
+        exercise_4_Btn.setOnClickListener(exerciseClickListener);
+        exercise_5_Btn.setOnClickListener(exerciseClickListener);
     }
+
+
 
     private void showReceivingToast() {
         toastHandler.postDelayed(new Runnable() {
@@ -200,7 +280,14 @@ public class BleManager {
 
                             activity.runOnUiThread(() -> {
                                 scanBtn.setEnabled(true);
-                                Toast.makeText(activity, "Device connected. You can now start scan.", Toast.LENGTH_SHORT).show();
+
+                                exercise_1_Btn.setEnabled(true);
+                                exercise_2_Btn.setEnabled(true);
+                                exercise_3_Btn.setEnabled(true);
+                                exercise_4_Btn.setEnabled(true);
+                                exercise_5_Btn.setEnabled(true);
+
+                                Toast.makeText(activity, "Device connected. You can now start scan or an exercise.", Toast.LENGTH_SHORT).show();
                             });
                         }
                     }
@@ -216,12 +303,15 @@ public class BleManager {
                     Log.d("BLE", "Received chunk: " + chunk);
                     fileDataBuffer.append(chunk);
 
-                    // Check for end-of-file marker
-                    if (chunk.contains("EOF")) {
+                    // Check if the full buffer ends with EOF
+                    if (fileDataBuffer.toString().endsWith("EOF")) {
                         isReceiving = false;
                         toastHandler.removeCallbacksAndMessages(null);
-                        Log.d("BLE", "EOF detected — saving file.");
-                        saveReceivedDataToFile("emg_result.txt");
+                        Log.d("BLE", "EOF fully received — saving file.");
+
+                        String filename = "EXT" + currentExerciseCase + ".txt"; // dynamic filename
+                        saveReceivedDataToFile(filename);
+                        isReceiving = false;
                     }
                 }
             }
@@ -245,5 +335,54 @@ public class BleManager {
         } catch (IOException e) {
             Log.e("BLE", "Error saving file", e);
         }
+        uploadFileToFirebase(filename);
+
     }
+    private void uploadFileToFirebase(String filename) {
+        File file = new File(activity.getExternalFilesDir(null), filename);
+        if (!file.exists()) {
+            Log.e("BLE", "File not found: " + filename);
+            return;
+        }
+
+        StringBuilder fileContent = new StringBuilder();
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.contains("EOF")) {
+                    fileContent.append(line).append("\n");
+                }
+            }
+        } catch (IOException e) {
+            Log.e("BLE", "Error reading file", e);
+            return;
+        }
+
+        // Parse the content to a list of values (optional)
+        List<String> values = Arrays.asList(fileContent.toString().split("\n"));
+
+        // Upload to Firebase under users -> [userId] -> sessions -> session 1 -> exercise 1
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(activity, "No user logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(user.getUid())
+                .child("sessions")
+                .child("session 1")
+                .child("exercise " + currentExerciseCase);
+
+        // You can either store as a list:
+        ref.setValue(values).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(activity, "Data uploaded to Firebase", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity, "Upload failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
