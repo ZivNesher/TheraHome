@@ -200,10 +200,18 @@ public class BleManager {
                 if (characteristic.getUuid().equals(UUID.fromString("00002a57-0000-1000-8000-00805f9b34fb"))) {
                     byte[] data = characteristic.getValue();
                     String chunk = new String(data);
-                    fileDataBuffer.append(chunk);
+
                     Log.d("BLE", "Received chunk: " + chunk);
+                    fileDataBuffer.append(chunk);
+
+                    // Check for end-of-file marker
+                    if (chunk.contains("EOF")) {
+                        Log.d("BLE", "EOF detected — saving file.");
+                        saveReceivedDataToFile("emg_result.txt");
+                    }
                 }
             }
+
         });
     }
 
