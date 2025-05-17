@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/main2"
-        android:text="Welcome to the Dashboard"
+        android:text="Welcome to TheraHome"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="22sp"
@@ -39,26 +39,181 @@
         android:orientation="vertical"
         android:background="@color/main1"
         >
-
-        <ImageButton
-            android:id="@+id/scan_button"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.4"
-            android:background="@color/main1"
-            android:scaleType="centerInside"
-            android:src="@drawable/start_scan_high_resolution_logo_white_transparent"
-            ></ImageButton>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:background="@color/main1"
             android:gravity="center"
             android:padding="8dp"
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/main1"
+                    android:text="Excercise 1"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+
+                    android:textColor="@android:color/black"
+                    ></com.google.android.material.textview.MaterialTextView>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:text="Start"
+                    android:textColor="@color/white"
+                    android:id="@+id/start_button_1"
+                    android:backgroundTint="@color/green"
+                    ></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/main1"
+                    android:text="Excercise 2"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+
+                    android:textColor="@android:color/black"
+                    ></com.google.android.material.textview.MaterialTextView>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:text="Start"
+                    android:textColor="@color/white"
+                    android:id="@+id/start_button_2"
+                    android:backgroundTint="@color/green"
+                    ></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/main1"
+                    android:text="Excercise 3"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+
+                    android:textColor="@android:color/black"
+                    ></com.google.android.material.textview.MaterialTextView>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:text="Start"
+                    android:textColor="@color/white"
+                    android:id="@+id/start_button_3"
+                    android:backgroundTint="@color/green"
+                    ></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/main1"
+                    android:text="Excercise 4"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+
+                    android:textColor="@android:color/black"
+                    ></com.google.android.material.textview.MaterialTextView>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:text="Start"
+                    android:textColor="@color/white"
+                    android:id="@+id/start_button_4"
+                    android:backgroundTint="@color/green"
+                    ></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/main1"
+                    android:text="Excercise 5"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+
+                    android:textColor="@android:color/black"
+                    ></com.google.android.material.textview.MaterialTextView>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:text="Start"
+                    android:textColor="@color/white"
+                    android:id="@+id/start_button_5"
+                    android:backgroundTint="@color/green"
+                    ></Button>
+            </LinearLayout>
+
 
         </LinearLayout>
 
