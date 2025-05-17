@@ -27,6 +27,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="22sp"
+
         android:textStyle="bold" />
 
     <ScrollView
@@ -50,6 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="ID"
+                    android:textColor="@color/black"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,6 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
+                    android:textColor="@color/black"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,6 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
+                    android:textColor="@color/black"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,6 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Repeat Password"
+                    android:textColor="@color/black"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,6 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="First Name"
+                    android:textColor="@color/black"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,6 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Surname"
+                    android:textColor="@color/black"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -128,6 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Date of Birth"
+                    android:textColor="@color/black"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,6 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Height (cm)"
+                    android:textColor="@color/black"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -154,6 +163,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Weight (kg)"
+                    android:textColor="@color/black"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 

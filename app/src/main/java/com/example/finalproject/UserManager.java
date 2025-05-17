@@ -23,16 +23,29 @@ public class UserManager {
     }
 
     public void saveUserData(String userId, String email, String Id, String password, String firstName, String surName, String dateOfBirth, String weight, String height) {
-        User user = new User(userId, email, Id, password, firstName, surName, dateOfBirth, weight, height);
+        User user = new User(
+                Id,
+                password,
+                firstName,
+                surName,
+                dateOfBirth,
+                weight,
+                height,
+                userId,
+                email
+        );
+
         usersRef.child(userId).setValue(user).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText((Context) callback, "User data saved successfully.", Toast.LENGTH_SHORT).show();
-                callback.loadMainActivity();  // only go to main screen AFTER save is confirmed
+                callback.loadMainActivity();
             } else {
                 Toast.makeText((Context) callback, "Failed to save user data: " + task.getException(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
+
 
 
 

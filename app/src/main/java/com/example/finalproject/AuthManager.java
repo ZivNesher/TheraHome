@@ -50,25 +50,31 @@ public class AuthManager {
         return mGoogleSignInClient;
     }
 
-    public void registerUser(String email, String password, String Id, String firstName, String surName, String age, String weight, String height) {
+    public void registerUser(String email, String password, String Id, String firstName, String surName,
+                             String dateOfBirth, String weight, String height, OnRegisterSuccessListener listener) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((MainActivity) context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Registration successful
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String userId = user.getUid();
-                            UserManager userManager = new UserManager(userManagerCallback);
-                            userManager.saveUserData(userId, email, Id, password, firstName, surName, age, weight, height);
-                            sendVerificationEmail(user);
+                            if (user != null) {
+                                String userId = user.getUid();
+                                UserManager userManager = new UserManager(userManagerCallback);
+                                userManager.saveUserData(userId, email, password, Id, firstName, surName, dateOfBirth, weight, height);
+                                sendVerificationEmail(user);
+                                if (listener != null) {
+                                    listener.onRegisterSuccess(user);
+                                }
+                            }
                         } else {
-                            // Registration failed
                             Toast.makeText(context, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
+
 
     private void sendVerificationEmail(FirebaseUser user) {
         user.sendEmailVerification()
