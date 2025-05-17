@@ -293,6 +293,7 @@ public class BleManager {
             File file = new File(activity.getExternalFilesDir(null), filename);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(cleanData.getBytes());
+            fos.flush();
             fos.close();
 
             Log.d("BLE", "File saved: " + file.getAbsolutePath());
@@ -303,7 +304,7 @@ public class BleManager {
         } catch (IOException e) {
             Log.e("BLE", "Error saving file", e);
         }
-        uploadFileToFirebase(filename);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> uploadFileToFirebase(filename), 100);
     }
 
     private void uploadFileToFirebase(String filename) {
