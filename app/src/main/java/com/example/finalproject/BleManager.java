@@ -204,7 +204,7 @@ public class BleManager {
             BluetoothDevice device = result.getDevice();
             @SuppressLint("MissingPermission") String name = device.getName() != null ? device.getName() : "Unnamed Device";
             String displayName = name + " [" + device.getAddress() + "]";
-            if (!devices.contains(device)) {
+            if (name != null && name.startsWith("TheraHome") && !devices.contains(device)) {
                 devices.add(device);
                 names.add(displayName);
             }
@@ -353,4 +353,14 @@ public class BleManager {
             }
         });
     }
+    @SuppressLint("MissingPermission")
+    public void disconnectBluetooth() {
+        if (gatt != null) {
+            gatt.disconnect();
+            gatt.close();
+            gatt = null;
+            Log.d("BLE", "Disconnected from Bluetooth device");
+        }
+    }
+
 }

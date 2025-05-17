@@ -46,7 +46,10 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         bleManager.setupScanButton(); // Prepare the scan button (but disabled initially)
         bleManager.loadUserDetailsButton();
         bleManager.loadPreviousScans();
-        bleManager.startInitialBleScan(); // <<< ADD THIS: trigger scan and connection after login
+        if (!AppManager.getInstance().isUserLoggedIn()) {
+            bleManager.startInitialBleScan();
+        }
+
     }
 
 
