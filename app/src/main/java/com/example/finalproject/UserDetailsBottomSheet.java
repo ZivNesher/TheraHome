@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
@@ -67,11 +68,16 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
         Button logoutButton = view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).getBleManager().disconnectBluetooth();
+            }
             if (getActivity() instanceof UserManagerCallback) {
-                ((UserManagerCallback) getActivity()).goToLoginScreen();  // ✅ Callback instead of direct call
+                ((UserManagerCallback) getActivity()).goToLoginScreen();
             }
             dismiss();
         });
+
 
         return view;
     }

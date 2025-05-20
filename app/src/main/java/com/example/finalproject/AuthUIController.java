@@ -1,9 +1,10 @@
 package com.example.finalproject;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,7 +13,7 @@ import java.util.Locale;
 public class AuthUIController {
     private final AppCompatActivity activity;
     private final AuthManager authManager;
-    private Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
 
     public AuthUIController(AppCompatActivity activity, AuthManager authManager) {
         this.activity = activity;
@@ -32,8 +33,8 @@ public class AuthUIController {
         });
 
         loginBtn.setOnClickListener(v -> {
-            EditText emailInput = activity.findViewById(R.id.email_input);
-            EditText passInput = activity.findViewById(R.id.password_input);
+            TextInputEditText emailInput = activity.findViewById(R.id.email_input);
+            TextInputEditText passInput = activity.findViewById(R.id.password_input);
 
             String email = emailInput.getText().toString().trim();
             String pass = passInput.getText().toString().trim();
@@ -49,48 +50,69 @@ public class AuthUIController {
     private void loadRegisterScreen() {
         activity.setContentView(R.layout.register_screen);
 
-        EditText ageInput = activity.findViewById(R.id.age_input);
-        ageInput.setOnClickListener(v -> DatePickerHelper.showDatePicker(activity, calendar, ageInput));
+        TextInputEditText dobInput = activity.findViewById(R.id.age_input); // נשאר עם אותו ID
+        dobInput.setFocusable(false);
+        dobInput.setClickable(true);
+        dobInput.setOnClickListener(v -> DatePickerHelper.showDatePicker(activity, calendar, dobInput));
 
-        Button backBtn = activity.findViewById(R.id.back_button);
+        ImageButton backBtn = activity.findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> loadLoginScreen());
 
         Button registerBtn = activity.findViewById(R.id.register_button);
         registerBtn.setOnClickListener(v -> {
-            EditText email = activity.findViewById(R.id.email_input);
-            EditText password = activity.findViewById(R.id.password_input);
-            EditText rePassword = activity.findViewById(R.id.repassword_input);
-            EditText id = activity.findViewById(R.id.id_fill_input);
-            EditText fname = activity.findViewById(R.id.firstname_input);
-            EditText sname = activity.findViewById(R.id.surname_input);
-            EditText height = activity.findViewById(R.id.height_input);
-            EditText weight = activity.findViewById(R.id.weight_input);
+            TextInputEditText email = activity.findViewById(R.id.email_input);
+            TextInputEditText password = activity.findViewById(R.id.password_input);
+            TextInputEditText rePassword = activity.findViewById(R.id.repassword_input);
+            TextInputEditText id = activity.findViewById(R.id.id_fill_input);
+            TextInputEditText fname = activity.findViewById(R.id.firstname_input);
+            TextInputEditText sname = activity.findViewById(R.id.surname_input);
+            TextInputEditText weight = activity.findViewById(R.id.weight_input);
+            TextInputEditText height = activity.findViewById(R.id.height_input);
 
-            if (!password.getText().toString().equals(rePassword.getText().toString())) {
+            String emailStr = email.getText().toString().trim();
+            String passwordStr = password.getText().toString().trim();
+            String rePasswordStr = rePassword.getText().toString().trim();
+            String idStr = id.getText().toString().trim();
+            String fnameStr = fname.getText().toString().trim();
+            String snameStr = sname.getText().toString().trim();
+            String dobStr = dobInput.getText().toString().trim();
+            String weightStr = weight.getText().toString().trim();
+            String heightStr = height.getText().toString().trim();
+
+            if (emailStr.isEmpty() || passwordStr.isEmpty() || rePasswordStr.isEmpty() ||
+                    idStr.isEmpty() || fnameStr.isEmpty() || snameStr.isEmpty() ||
+                    dobStr.isEmpty() || weightStr.isEmpty() || heightStr.isEmpty()) {
+                Toast.makeText(activity, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!passwordStr.equals(rePasswordStr)) {
                 Toast.makeText(activity, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             authManager.registerUser(
-                    email.getText().toString().trim(),
-                    password.getText().toString().trim(),
-                    id.getText().toString().trim(),
-                    fname.getText().toString().trim(),
-                    sname.getText().toString().trim(),
-                    ageInput.getText().toString().trim(),
-                    weight.getText().toString().trim(),
-                    height.getText().toString().trim()
+                    emailStr,
+                    passwordStr,
+                    idStr,
+                    fnameStr,
+                    snameStr,
+                    dobStr,
+                    weightStr,
+                    heightStr,
+                    user -> {
+                        Intent intent = new Intent(activity, ProfileCompletionActivity.class);
+                        intent.putExtra("userId", user.getUid());
+                        intent.putExtra("email", emailStr);
+                        intent.putExtra("ID", idStr);
+                        intent.putExtra("firstname", fnameStr);
+                        intent.putExtra("surname", snameStr);
+                        intent.putExtra("dateOfBirth", dobStr);
+                        intent.putExtra("height", heightStr);
+                        intent.putExtra("weight", weightStr);
+                        activity.startActivity(intent);
+                    }
             );
         });
-    }
-
-    private void showDatePicker(EditText ageInput) {
-        DatePickerDialog picker = new DatePickerDialog(activity, (view, year, month, day) -> {
-            calendar.set(year, month, day);
-            ageInput.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.getTime()));
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-        picker.getDatePicker().setMaxDate(System.currentTimeMillis());
-        picker.show();
     }
 }

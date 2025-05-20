@@ -1,9 +1,12 @@
 package com.example.finalproject;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class User implements Serializable {
     public String password;
@@ -32,13 +35,18 @@ public class User implements Serializable {
         this.Id = Id;
     }
 
-    // Method to calculate age dynamically
+
+    @Exclude
     public int getAge() {
         if (dateOfBirth == null || dateOfBirth.isEmpty()) {
-            return -1; // Handle case where DOB is not set
+            return -1; // No DOB
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Adjust format as needed
-        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
-        return Period.between(birthDate, LocalDate.now()).getYears();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } catch (DateTimeParseException e) {
+            return -1; // Invalid format
+        }
     }
 }

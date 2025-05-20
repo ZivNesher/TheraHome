@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,13 +43,25 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
 
     @Override
     public void loadMainActivity() {
+
         setContentView(R.layout.activity_main);
         bleManager.setupScanButton(); // Prepare the scan button (but disabled initially)
         bleManager.loadUserDetailsButton();
         bleManager.loadPreviousScans();
-        bleManager.startInitialBleScan(); // <<< ADD THIS: trigger scan and connection after login
+        if (!AppManager.getInstance().isUserLoggedIn()) {
+            bleManager.startInitialBleScan();
+        }
+        WebView webView = findViewById(R.id.instruction_webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        String html = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bensREM3tnw\" frameborder=\"0\" allowfullscreen></iframe>";
+        webView.loadData(html, "text/html", "utf-8");
+
+
     }
 
+    public BleManager getBleManager() {
+        return bleManager;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
