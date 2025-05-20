@@ -6,12 +6,17 @@ import android.app.AlertDialog;
 import android.bluetooth.*;
 import android.bluetooth.le.*;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -34,6 +39,7 @@ public class BleManager {
     private BluetoothLeScanner scanner;
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic switchCharacteristic;
+    private AlertDialog searchingDialog;
 
     private final List<BluetoothDevice> devices = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
@@ -187,7 +193,29 @@ public class BleManager {
 
         devices.clear();
         names.clear();
-        Toast.makeText(activity, "Searching for BLE devices...", Toast.LENGTH_SHORT).show();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(40, 40, 40, 40);
+        layout.setBackgroundColor(Color.WHITE);
+        layout.setGravity(Gravity.CENTER);
+
+        ProgressBar spinner = new ProgressBar(activity);
+        TextView message = new TextView(activity);
+        message.setText("Searching for TheraHome devices...");
+        message.setTextSize(18);
+        message.setTextColor(Color.BLACK);
+        message.setPadding(0, 20, 0, 0);
+
+        layout.addView(spinner);
+        layout.addView(message);
+
+        builder.setView(layout);
+        AlertDialog searchingDialog = builder.create();
+        searchingDialog.show();
 
         scanner.startScan(null,
                 new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(),
@@ -195,9 +223,11 @@ public class BleManager {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             scanner.stopScan(scanCallback);
+            if (searchingDialog.isShowing()) searchingDialog.dismiss();
             showDeviceDialog();
         }, 8000);
     }
+
 
     private final ScanCallback scanCallback = new ScanCallback() {
         public void onScanResult(int callbackType, ScanResult result) {
@@ -207,6 +237,9 @@ public class BleManager {
             if (name != null && name.startsWith("TheraHome") && !devices.contains(device)) {
                 devices.add(device);
                 names.add(displayName);
+                if (searchingDialog != null && searchingDialog.isShowing()) {
+                    searchingDialog.dismiss();
+                }
             }
         }
     };
