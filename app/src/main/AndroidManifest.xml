@@ -25,10 +25,10 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
 
-        <activity android:name="com.example.therahome.ProfileCompletionActivity"
+        <activity android:name="com.ziv.therahome.ProfileCompletionActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.example.therahome.MainActivity"
+            android:name="com.ziv.therahome.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
 
