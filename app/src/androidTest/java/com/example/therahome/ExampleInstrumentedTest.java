@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.therahome;
 
 import android.content.Context;
 

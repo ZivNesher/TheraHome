@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.finalproject"
+    namespace = "com.ziv.therahome"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.finalproject"
+        applicationId = "com.ziv.therahome"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
