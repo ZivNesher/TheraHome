@@ -1,97 +1,57 @@
-# TheraHome: User Management and Scan Tracking Application
+# TheraHome: Rehab Monitoring System
 
-## Overview
-
-**TheraHome** is a mobile application designed to support physical rehabilitation by tracking muscle activity and enabling therapist-patient interactions. The app allows users to register, log in (via email or Google), complete their profiles, perform EMG-based scans, and share scan data with their therapists in real-time using Firebase.
-
-This project includes:
-- A mobile app for patients  
-- A web portal for therapists  
-- Firebase backend integration
+**TheraHome** is a full-stack rehabilitation tracking system designed to help patients recover from physical injuries and allow therapists to monitor their progress remotely. The solution includes an Android mobile application for patients and a React-based web portal for therapists.
 
 ---
 
 ## Features
 
-### 1. User Registration and Login
-- Email and password registration
-- Google Sign-In integration
-- Email verification for new users
+### Android Patient App
+- Firebase Authentication (Email & Google Sign-In)
+- Guided profile completion: ID, date of birth, height, weight
+- BLE (Bluetooth Low Energy) scan button to simulate EMG data input
+- Real-time Firebase Realtime Database integration
+- Scan history saved and displayed chronologically
+- Pop-up user profile view and animated app logo
 
-<img src="https://github.com/user-attachments/assets/14193de8-999d-4e73-a711-a97f3b59ba74" width="300"/>
-
----
-
-### 2. Profile Completion
-- Users complete their profile with personal details (age, weight, height, etc.)
-- Data is saved in Firebase Realtime Database
-
-<img src="https://github.com/user-attachments/assets/de27abfc-73e6-4e3e-b3d7-d037f7ab2d73" width="300"/>
-
----
-
-### 3. Scan Tracking
-- Users can perform EMG-based scans using the app
-- Scan data is saved to Firebase and shared with the assigned therapist
-
-<img width="341" alt="Scan Screen" src="https://github.com/user-attachments/assets/b39b5399-1e42-41fb-a1cf-1d56d2e14c79" />
-<img src="https://github.com/user-attachments/assets/bf83e263-fb9e-499c-a761-886af7ca3dae" width="300"/>
+### Therapist Web Portal
+- Firebase Authentication with Admin/Staff role support
+- Patient search by ID with profile and scan history display
+- Interactive graph of all scans sorted by date
+- Exercise-based visualization and session averaging
+- Admin panel to add authorized therapist accounts
 
 ---
 
-### 4. Therapist Portal
-- Therapists can log in via a web portal to monitor patient scan data
-- Real-time data retrieval from Firebase
+## 🛠Tech Stack
 
-<img width="1332" alt="Portal 1" src="https://github.com/user-attachments/assets/4a1dc6a7-3f76-41ab-9a99-f639d24e4fb5" />
-<img width="1332" alt="Portal 2" src="https://github.com/user-attachments/assets/a815e679-3bdf-47d9-a5b9-a8f6ee30ad9b" />
-<img width="1329" alt="Portal 3" src="https://github.com/user-attachments/assets/598a66d9-45be-4a0b-aa26-824b5a220cfa" />
-
----
-
-## Architecture
-
-The project is structured in a modular way, with separate classes managing different functionalities. This promotes clean code organization, readability, and maintainability.
-
-### Main Components
-
-**MainActivity**  
-- Handles login, registration, and user navigation  
-- Integrates Google Sign-In and FirebaseAuth  
-
-**ProfileCompletionActivity**  
-- Prompts users to complete their profile  
-- Saves user data to Firebase  
-
-**User (Model)**  
-- Represents user data structure  
-- Fields include: `userId`, `email`, `password`, `firstName`, `surName`, `dateOfBirth`, `weight`, `height`  
-
-**AuthManager**  
-- Manages authentication logic  
-- Handles email/password registration, Google Sign-In, and email verification  
-
-**UserManager**  
-- Manages profile data and interaction with Firebase  
-- Checks profile completion status and saves user information  
-
-**ScanManager**  
-- Manages scan generation, saving, and retrieval  
-- Stores scan data in Firebase under each user  
-
-**UserManagerCallback**  
-- Interface to decouple logic between `UserManager` and `MainActivity`  
-- Triggers UI updates on successful data saving  
+| Platform        | Technologies                                |
+|----------------|---------------------------------------------|
+| Android (Java) | Firebase Auth, Realtime DB, BLE, XML Layout |
+| Web (React)    | React.js, Firebase, Material UI, Chart.js   |
 
 ---
 
-## Firebase Integration
+## User Roles
 
-**Authentication**  
-- Email/password login and Google Sign-In  
-- Email verification required for new users  
+- **Patients** (Android):
+  - Register/login and complete their profile
+  - Perform BLE scans simulating EMG readings
+  - View their scan history
 
-**Realtime Database**  
-- Stores user profile data  
-- Saves scan data under each user's node  
-- Real-time updates for therapist dashboard  
+- **Therapists** (Web):
+  - Login to the web portal (authorized by admin)
+  - Search patients and view scan charts
+  - Visualize scan progress over time
+
+- **Admin**:
+  - Use hardcoded credentials to access admin dashboard
+  - Add new therapist users to the Firebase database
+
+---
+
+### Android App
+1. Clone the repo and open in Android Studio.
+2. Set up Firebase project and update `google-services.json`.
+3. Run on emulator or physical device with Bluetooth support.
+
