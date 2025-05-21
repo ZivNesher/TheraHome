@@ -20,10 +20,11 @@
 - Interactive graph of all scans sorted by date
 - Exercise-based visualization and session averaging
 - Admin panel to add authorized therapist accounts
+- For testing feel free to contact me for a test user - https://bodysync-f5388.web.app/
 
 ---
 
-## 🛠Tech Stack
+## Tech Stack
 
 | Platform        | Technologies                                |
 |----------------|---------------------------------------------|
