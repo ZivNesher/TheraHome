@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
-import com.ziv.therahome.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +49,7 @@ public class BleManager {
     private Button exercise_3_Btn;
     private Button exercise_4_Btn;
     private Button exercise_5_Btn;
-    Map<Button, Boolean> buttonStates = new HashMap<>();
+    private final Map<Button, Boolean> buttonStates = new HashMap<>();
     private final StringBuilder fileDataBuffer = new StringBuilder();
     private int currentExerciseCase = 0;
 
@@ -63,14 +62,12 @@ public class BleManager {
     }
 
     public void setupScanButton() {
-        // Initialize exercise buttons
         exercise_1_Btn = activity.findViewById(R.id.start_button_1);
         exercise_2_Btn = activity.findViewById(R.id.start_button_2);
         exercise_3_Btn = activity.findViewById(R.id.start_button_3);
         exercise_4_Btn = activity.findViewById(R.id.start_button_4);
         exercise_5_Btn = activity.findViewById(R.id.start_button_5);
 
-        // Initialize button state map and disable all buttons
         for (Button btn : Arrays.asList(exercise_1_Btn, exercise_2_Btn, exercise_3_Btn, exercise_4_Btn, exercise_5_Btn)) {
             btn.setEnabled(false);
             buttonStates.put(btn, false);
@@ -84,22 +81,44 @@ public class BleManager {
             else if (btn == exercise_4_Btn) caseNum = 4;
             else if (btn == exercise_5_Btn) caseNum = 5;
 
+            final int finalCaseNum = caseNum;
+
             if (switchCharacteristic != null) {
                 Button clickedBtn = (Button) btn;
                 boolean isActive = buttonStates.get(clickedBtn);
-
                 if (!isActive) {
-                    currentExerciseCase = caseNum;
-                    switchCharacteristic.setValue(new byte[]{(byte) caseNum});
-                    @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
-                    Log.d("BLE", "Started Exercise Case " + caseNum + ": " + success);
-                    Toast.makeText(activity, "Started Exercise " + caseNum, Toast.LENGTH_SHORT).show();
+                    clickedBtn.setBackgroundColor(Color.YELLOW);
+                    clickedBtn.setTextColor(Color.BLACK);
+                    clickedBtn.setText("3");
 
-                    clickedBtn.setBackgroundColor(0xFFFF4444); // red
-                    clickedBtn.setText("STOP");
-                    buttonStates.put(clickedBtn, true);
+                    Handler countdownHandler = new Handler(Looper.getMainLooper());
+                    Runnable countdownRunnable = new Runnable() {
+                        int count = 3;
+
+                        @Override
+                        public void run() {
+                            count--;
+                            if (count > 0) {
+                                clickedBtn.setText(String.valueOf(count));
+                                countdownHandler.postDelayed(this, 1000);
+                            } else {
+                                currentExerciseCase = finalCaseNum;
+                                switchCharacteristic.setValue(new byte[]{(byte) finalCaseNum});
+                                @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
+                                Log.d("BLE", "Started Exercise Case " + finalCaseNum + ": " + success);
+                                Toast.makeText(activity, "Started Exercise " + finalCaseNum, Toast.LENGTH_SHORT).show();
+
+                                clickedBtn.setBackgroundColor(0xFFFF4444); // red
+                                clickedBtn.setText("STOP");
+                                buttonStates.put(clickedBtn, true);
+                            }
+                        }
+                    };
+
+                    countdownHandler.postDelayed(countdownRunnable, 1000);
+
                 } else {
-                    fileDataBuffer.setLength(0); // clear previous data
+                    fileDataBuffer.setLength(0);
                     isReceiving = true;
                     showReceivingToast();
 
@@ -109,8 +128,9 @@ public class BleManager {
                     Log.d("BLE", "Sent STOP (9): " + success);
                     Toast.makeText(activity, "Stopped Exercise " + caseNum, Toast.LENGTH_SHORT).show();
 
-                    clickedBtn.setBackgroundColor(0xFF4CAF50); // green
-                    clickedBtn.setText("START");
+                    clickedBtn.setBackgroundColor(0xD3D3D3);
+                    clickedBtn.setText("RESTART");
+                    clickedBtn.setTextColor(Color.BLACK);
                     buttonStates.put(clickedBtn, false);
                 }
             } else {
@@ -124,6 +144,8 @@ public class BleManager {
         exercise_4_Btn.setOnClickListener(exerciseClickListener);
         exercise_5_Btn.setOnClickListener(exerciseClickListener);
     }
+
+
 
     private void showReceivingToast() {
         toastHandler.postDelayed(new Runnable() {
@@ -215,7 +237,7 @@ public class BleManager {
         layout.addView(message);
 
         builder.setView(layout);
-        AlertDialog searchingDialog = builder.create();
+        searchingDialog = builder.create();
         searchingDialog.show();
 
         scanner.startScan(null,
@@ -228,7 +250,6 @@ public class BleManager {
             showDeviceDialog();
         }, 8000);
     }
-
 
     private final ScanCallback scanCallback = new ScanCallback() {
         public void onScanResult(int callbackType, ScanResult result) {
@@ -247,13 +268,19 @@ public class BleManager {
 
     private void showDeviceDialog() {
         if (devices.isEmpty()) {
-            Toast.makeText(activity, "No BLE devices found", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(activity)
+                    .setTitle("No BLE devices found")
+                    .setMessage("Would you like to search again?")
+                    .setPositiveButton("Search Again", (d, i) -> startBleScan())
+                    .setNegativeButton("Cancel", null)
+                    .show();
             return;
         }
 
         new AlertDialog.Builder(activity)
                 .setTitle("Select Device")
                 .setItems(names.toArray(new String[0]), (d, i) -> connect(devices.get(i)))
+                .setNeutralButton("Search Again", (d, i) -> startBleScan())
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -289,7 +316,6 @@ public class BleManager {
                                 exercise_3_Btn.setEnabled(true);
                                 exercise_4_Btn.setEnabled(true);
                                 exercise_5_Btn.setEnabled(true);
-
                                 Toast.makeText(activity, "Device connected. You can now start an exercise.", Toast.LENGTH_SHORT).show();
                             });
                         }
@@ -387,6 +413,7 @@ public class BleManager {
             }
         });
     }
+
     @SuppressLint("MissingPermission")
     public void disconnectBluetooth() {
         if (gatt != null) {
@@ -396,5 +423,4 @@ public class BleManager {
             Log.d("BLE", "Disconnected from Bluetooth device");
         }
     }
-
 }
