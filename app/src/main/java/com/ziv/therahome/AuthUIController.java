@@ -103,18 +103,12 @@ public class AuthUIController {
                     weightStr,
                     heightStr,
                     user -> {
-                        Intent intent = new Intent(activity, ProfileCompletionActivity.class);
-                        intent.putExtra("userId", user.getUid());
-                        intent.putExtra("email", emailStr);
-                        intent.putExtra("ID", idStr);
-                        intent.putExtra("firstname", fnameStr);
-                        intent.putExtra("surname", snameStr);
-                        intent.putExtra("dateOfBirth", dobStr);
-                        intent.putExtra("height", heightStr);
-                        intent.putExtra("weight", weightStr);
-                        activity.startActivity(intent);
+                        if (activity instanceof UserManagerCallback) {
+                            ((UserManagerCallback) activity).goToLoginScreen();
+                        }
                     }
             );
+
         });
     }
 }
