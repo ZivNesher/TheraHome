@@ -78,6 +78,13 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
             }
             dismiss();
         });
+        Button visitNotesButton = view.findViewById(R.id.btn_visit_notes);
+        visitNotesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), VisitNotesActivity.class);
+            startActivity(intent);
+            dismiss();
+        });
+
 
 
         return view;
