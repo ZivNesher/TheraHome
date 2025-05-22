@@ -30,10 +30,13 @@ public class AuthUIController {
             android.content.Intent signInIntent = authManager.getGoogleSignInClient().getSignInIntent();
             activity.startActivityForResult(signInIntent, 9001);
         });
+        loginBtn.setEnabled(true);
 
         loginBtn.setOnClickListener(v -> {
             TextInputEditText emailInput = activity.findViewById(R.id.email_input);
             TextInputEditText passInput = activity.findViewById(R.id.password_input);
+            loginBtn.setEnabled(false);
+            loginBtn.setBackgroundColor(0xD3D3D3);
 
             String email = emailInput.getText().toString().trim();
             String pass = passInput.getText().toString().trim();
