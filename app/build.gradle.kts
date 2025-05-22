@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.finalproject"
+    namespace = "com.ziv.therahome"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.finalproject"
+        applicationId = "com.ziv.therahome"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 6
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

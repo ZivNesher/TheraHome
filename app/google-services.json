@@ -3,7 +3,7 @@
     "project_number": "183173926212",
     "firebase_url": "https://bodysync-f5388-default-rtdb.firebaseio.com",
     "project_id": "bodysync-f5388",
-    "storage_bucket": "bodysync-f5388.appspot.com"
+    "storage_bucket": "bodysync-f5388.firebasestorage.app"
   },
   "client": [
     {
@@ -11,6 +11,51 @@
         "mobilesdk_app_id": "1:183173926212:android:f05d3909a2aca305eedb11",
         "android_client_info": {
           "package_name": "com.example.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183173926212-4ble445pmc65l4phla9k7k741rkp6a1h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finalproject",
+            "certificate_hash": "a3f69f5bc28d2e61534ea836b1b5ca63ebe007cd"
+          }
+        },
+        {
+          "client_id": "183173926212-72fmo0kb5r9i46fnb36oq4ehbrmhnj7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finalproject",
+            "certificate_hash": "75e80bd08b6168074f2bfdfe8ea64cfbc71b07fc"
+          }
+        },
+        {
+          "client_id": "183173926212-g19tu535t88rfbofbc0t9m27laqukr5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMq_h055BsFeURShNiZ084-pCUOUuSGC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183173926212-g19tu535t88rfbofbc0t9m27laqukr5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183173926212:android:01eaf5d03805eaedeedb11",
+        "android_client_info": {
+          "package_name": "com.ziv.therahome"
         }
       },
       "oauth_client": [

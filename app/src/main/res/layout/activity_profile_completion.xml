@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/main1"
-    tools:context=".ProfileCompletionActivity">
+    tools:context="com.ziv.therahome.ProfileCompletionActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -33,6 +33,7 @@
             android:id="@+id/id_fill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="ID" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,6 +45,7 @@
             android:id="@+id/surname_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Surname" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,6 +57,7 @@
             android:id="@+id/firstname_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="First Name" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,6 +81,7 @@
             android:id="@+id/height_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Height (cm)"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -90,6 +94,7 @@
             android:id="@+id/weight_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Weight (kg)"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>

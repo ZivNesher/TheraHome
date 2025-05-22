@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/main1"
-    tools:context=".MainActivity">
+    tools:context="com.ziv.therahome.MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:id="@+id/instruction_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="How to Apply 3 EKG Stickers"
+                android:text="How to Apply your TheraHome Device"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -76,7 +76,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
                 <com.google.android.material.textview.MaterialTextView
@@ -109,7 +109,7 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
                 <com.google.android.material.textview.MaterialTextView
@@ -142,7 +142,7 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
                 <com.google.android.material.textview.MaterialTextView
@@ -175,7 +175,7 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
                 <com.google.android.material.textview.MaterialTextView
@@ -208,7 +208,7 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
                 <com.google.android.material.textview.MaterialTextView
@@ -239,12 +239,7 @@
                     android:backgroundTint="@color/green"
                     ></Button>
             </LinearLayout>
-
-
         </LinearLayout>
-
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -268,6 +263,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
 
 </LinearLayout>
