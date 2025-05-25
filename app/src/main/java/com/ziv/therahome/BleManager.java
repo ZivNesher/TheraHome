@@ -217,6 +217,8 @@ public class BleManager {
         devices.clear();
         names.clear();
 
+        if (searchingDialog != null && searchingDialog.isShowing()) searchingDialog.dismiss();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setCancelable(false);
 
@@ -244,7 +246,18 @@ public class BleManager {
                 new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(),
                 scanCallback);
 
+        // Stop scan after 8 seconds only if no device was found
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (devices.isEmpty()) {
+                scanner.stopScan(scanCallback);
+                if (searchingDialog != null && searchingDialog.isShowing()) {
+                    searchingDialog.dismiss();
+                }
+                showDeviceDialog(); // show "not found" dialog with retry
+            }
+        }, 8000);
     }
+
 
 
     private final ScanCallback scanCallback = new ScanCallback() {
@@ -252,7 +265,6 @@ public class BleManager {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
-            @SuppressLint("MissingPermission")
             String name = device.getName() != null ? device.getName() : "Unnamed Device";
             String displayName = name + " [" + device.getAddress() + "]";
 
@@ -261,17 +273,18 @@ public class BleManager {
                 names.add(displayName);
 
                 if (scanner != null) {
-                    scanner.stopScan(this); //stop scanning immediately
+                    scanner.stopScan(this);
                 }
 
                 if (searchingDialog != null && searchingDialog.isShowing()) {
                     searchingDialog.dismiss();
                 }
 
-                showDeviceDialog(); //go straight to the selection dialog
+                showDeviceDialog(); // Show the dialog only once
             }
         }
     };
+
 
 
     private void showDeviceDialog() {
