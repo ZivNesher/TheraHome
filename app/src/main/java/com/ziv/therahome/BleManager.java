@@ -251,6 +251,7 @@ public class BleManager {
         }, 8000);
     }
 
+
     private final ScanCallback scanCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
         @Override
