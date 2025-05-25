@@ -252,19 +252,31 @@ public class BleManager {
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {
+        @SuppressLint("MissingPermission")
+        @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
-            @SuppressLint("MissingPermission") String name = device.getName() != null ? device.getName() : "Unnamed Device";
+            @SuppressLint("MissingPermission")
+            String name = device.getName() != null ? device.getName() : "Unnamed Device";
             String displayName = name + " [" + device.getAddress() + "]";
+
             if (name != null && name.startsWith("TheraHome") && !devices.contains(device)) {
                 devices.add(device);
                 names.add(displayName);
+
+                if (scanner != null) {
+                    scanner.stopScan(this); //stop scanning immediately
+                }
+
                 if (searchingDialog != null && searchingDialog.isShowing()) {
                     searchingDialog.dismiss();
                 }
+
+                showDeviceDialog(); //go straight to the selection dialog
             }
         }
     };
+
 
     private void showDeviceDialog() {
         if (devices.isEmpty()) {
@@ -339,10 +351,29 @@ public class BleManager {
 
                         String filename = "EXT" + currentExerciseCase + ".txt";
                         saveReceivedDataToFile(filename);
-                        isReceiving = false;
+
+                        activity.runOnUiThread(() -> {
+                            Button targetBtn = null;
+                            switch (currentExerciseCase) {
+                                case 1: targetBtn = exercise_1_Btn; break;
+                                case 2: targetBtn = exercise_2_Btn; break;
+                                case 3: targetBtn = exercise_3_Btn; break;
+                                case 4: targetBtn = exercise_4_Btn; break;
+                                case 5: targetBtn = exercise_5_Btn; break;
+                            }
+
+                            if (targetBtn != null) {
+                                targetBtn.setBackgroundColor(Color.LTGRAY); // Ensure it's gray
+                                targetBtn.setText("RESTART");
+                                targetBtn.setTextColor(Color.BLACK);
+                                buttonStates.put(targetBtn, false);
+                            }
+                        });
                     }
                 }
             }
+
+
         });
     }
 

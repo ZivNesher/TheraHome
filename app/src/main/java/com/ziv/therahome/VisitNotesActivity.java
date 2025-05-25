@@ -1,9 +1,12 @@
 package com.ziv.therahome;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +34,16 @@ public class VisitNotesActivity extends AppCompatActivity {
         notesListView = findViewById(R.id.notes_list);
         backButton = findViewById(R.id.back_button);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notesList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notesList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = view.findViewById(android.R.id.text1);
+                textView.setTextColor(getResources().getColor(android.R.color.black));
+                return view;
+            }
+        };
+
         notesListView.setAdapter(adapter);
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
