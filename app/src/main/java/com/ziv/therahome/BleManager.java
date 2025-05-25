@@ -244,11 +244,6 @@ public class BleManager {
                 new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(),
                 scanCallback);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            scanner.stopScan(scanCallback);
-            if (searchingDialog.isShowing()) searchingDialog.dismiss();
-            showDeviceDialog();
-        }, 8000);
     }
 
 
