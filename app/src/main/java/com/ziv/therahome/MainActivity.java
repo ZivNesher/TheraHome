@@ -1,6 +1,7 @@
 package com.ziv.therahome;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_screen);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
         progressBar = findViewById(R.id.progressBar);
         authManager = new AuthManager(this, this, this);
