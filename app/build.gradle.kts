@@ -11,8 +11,8 @@ android {
         applicationId = "com.ziv.therahome"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "2.3"
+        versionCode = 12
+        versionName = "4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,6 +45,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.firebase:firebase-database:20.3.0")
+    implementation("com.google.firebase:firebase-messaging:23.1.2")
+
 
     // Google Play Services and other libraries
     implementation("com.google.android.gms:play-services-auth:21.2.0")
