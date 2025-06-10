@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,8 +68,16 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
         Button editButton = view.findViewById(R.id.edit_button);
         editButton.setOnClickListener(v -> {
+            String uid = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    : null;
+
+            if (uid == null) {
+                Toast.makeText(getContext(), "User ID is missing", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(getActivity(), ProfileCompletionActivity.class);
-            intent.putExtra("userId", user.userId);
+            intent.putExtra("userId", uid);
             intent.putExtra("email", user.Email);
             intent.putExtra("surname", user.surName);
             intent.putExtra("firstname", user.firstName);
@@ -76,6 +85,7 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
             intent.putExtra("height", user.height);
             intent.putExtra("weight", user.weight);
             intent.putExtra("ID", user.Id);
+            intent.putExtra("fromEdit", true);
             startActivity(intent);
             dismiss();
         });

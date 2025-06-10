@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class ProfileCompletionActivity extends AppCompatActivity {
     private EditText weightEditText;
     private EditText IdEditText;
     private Button saveButton;
+    private boolean fromEdit = false;
+
 
     private DatabaseReference usersRef;
     private String userId;
@@ -46,6 +49,8 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         heightEditText = findViewById(R.id.height_input);
         weightEditText = findViewById(R.id.weight_input);
         saveButton = findViewById(R.id.save_button);
+        fromEdit = getIntent().getBooleanExtra("fromEdit", false);
+
 
         // Disable manual DOB input
         dobEditText.setFocusable(false);
@@ -108,26 +113,42 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(Id) || TextUtils.isEmpty(surname) || TextUtils.isEmpty(firstname) ||
                 TextUtils.isEmpty(dateOfBirth) || TextUtils.isEmpty(height) || TextUtils.isEmpty(weight)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-        } else {
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("Id", Id);
-            updates.put("firstName", firstname);
-            updates.put("surName", surname);
-            updates.put("dateOfBirth", dateOfBirth);
-            updates.put("height", height);
-            updates.put("weight", weight);
+            return;
+        }
 
-            usersRef.child(userId).updateChildren(updates)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ProfileCompletionActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ProfileCompletionActivity.this, MainActivity.class);
-                            startActivity(intent);
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "Invalid userId — cannot save.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("Id", Id);
+        updates.put("firstName", firstname);
+        updates.put("surName", surname);
+        updates.put("dateOfBirth", dateOfBirth);
+        updates.put("height", height);
+        updates.put("weight", weight);
+
+        Log.d("ProfileSave", "Saving to /users/" + userId);
+
+        usersRef.child(userId).updateChildren(updates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                        if (fromEdit) {
                             finish();
                         } else {
-                            Toast.makeText(ProfileCompletionActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, MainActivity.class));
+                            finish();
                         }
-                    });
-        }
+                    } else {
+                        Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                });
     }
+
 }
