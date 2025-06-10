@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ziv.therahome.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,15 +23,16 @@ public class ProfileCompletionActivity extends AppCompatActivity {
 
     private EditText surnameEditText;
     private EditText firstnameEditText;
-    private EditText dobEditText; // Replacing age field with Date of Birth
+    private EditText dobEditText;
     private EditText heightEditText;
     private EditText weightEditText;
+    private EditText IdEditText;
     private Button saveButton;
+
     private DatabaseReference usersRef;
     private String userId;
     private String email;
-    private Calendar calendar; // Used for date selection
-    private EditText IdEditText;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +42,22 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         IdEditText = findViewById(R.id.id_fill);
         surnameEditText = findViewById(R.id.surname_input);
         firstnameEditText = findViewById(R.id.firstname_input);
-        dobEditText = findViewById(R.id.age_input); // Updated field
+        dobEditText = findViewById(R.id.age_input);
         heightEditText = findViewById(R.id.height_input);
         weightEditText = findViewById(R.id.weight_input);
         saveButton = findViewById(R.id.save_button);
 
-        // Initialize Firebase
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
+        // Disable manual DOB input
+        dobEditText.setFocusable(false);
+        dobEditText.setClickable(true);
+        dobEditText.setKeyListener(null);
 
-        // Get userId and email from Intent
+        // Firebase
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
         userId = getIntent().getStringExtra("userId");
         email = getIntent().getStringExtra("email");
 
-        // Populate fields with current user data
+        // Prefill if available
         IdEditText.setText(getIntent().getStringExtra("ID"));
         surnameEditText.setText(getIntent().getStringExtra("surname"));
         firstnameEditText.setText(getIntent().getStringExtra("firstname"));
@@ -64,9 +67,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
 
         calendar = Calendar.getInstance();
 
-        // Open DatePicker when DOB field is clicked
         dobEditText.setOnClickListener(v -> showDatePicker());
-
         saveButton.setOnClickListener(v -> saveUserData());
     }
 
@@ -79,20 +80,21 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                 this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     calendar.set(selectedYear, selectedMonth, selectedDay);
-                    updateLabel();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    dobEditText.setText(sdf.format(calendar.getTime()));
                 },
                 year, month, day
         );
 
-        // Restrict future dates
+        // Disable future dates
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-        datePickerDialog.show();
-    }
+        // Optional: Enforce age limit (e.g., at least 10 years old)
+        Calendar minCal = Calendar.getInstance();
+        minCal.add(Calendar.YEAR, -100); // max 100 years old
+        datePickerDialog.getDatePicker().setMinDate(minCal.getTimeInMillis());
 
-    private void updateLabel() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        dobEditText.setText(sdf.format(calendar.getTime()));
+        datePickerDialog.show();
     }
 
     private void saveUserData() {
@@ -107,12 +109,11 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                 TextUtils.isEmpty(dateOfBirth) || TextUtils.isEmpty(height) || TextUtils.isEmpty(weight)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
         } else {
-            // Create a map of fields to update
             Map<String, Object> updates = new HashMap<>();
             updates.put("Id", Id);
             updates.put("firstName", firstname);
             updates.put("surName", surname);
-            updates.put("dateOfBirth", dateOfBirth); // Save dateOfBirth instead of age
+            updates.put("dateOfBirth", dateOfBirth);
             updates.put("height", height);
             updates.put("weight", weight);
 
@@ -122,8 +123,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                             Toast.makeText(ProfileCompletionActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(ProfileCompletionActivity.this, MainActivity.class);
                             startActivity(intent);
-                            finish(); // ✅ finishes this activity after starting MainActivity
-
+                            finish();
                         } else {
                             Toast.makeText(ProfileCompletionActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }
