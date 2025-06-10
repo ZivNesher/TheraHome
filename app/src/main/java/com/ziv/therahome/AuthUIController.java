@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.ziv.therahome.R;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -35,17 +36,37 @@ public class AuthUIController {
         loginBtn.setOnClickListener(v -> {
             TextInputEditText emailInput = activity.findViewById(R.id.email_input);
             TextInputEditText passInput = activity.findViewById(R.id.password_input);
+
             loginBtn.setEnabled(false);
-            loginBtn.setBackgroundColor(0xD3D3D3);
+            loginBtn.setBackgroundColor(0xFFD3D3D3); // light gray
 
             String email = emailInput.getText().toString().trim();
             String pass = passInput.getText().toString().trim();
 
             if (email.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(activity, "Email and password are required", Toast.LENGTH_SHORT).show();
-            } else {
-                authManager.loginUser(email, pass);
+                loginBtn.setEnabled(true);
+                loginBtn.setBackgroundColor(0xFF6200EE); // restore color
+                return;
             }
+
+            // ✅ Show loading dialog
+            LoadingDialogHelper loadingDialog = new LoadingDialogHelper();
+            loadingDialog.show(activity);
+
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener((MainActivity) activity, task -> {
+                        loadingDialog.hide();
+                        loginBtn.setEnabled(true);
+                        loginBtn.setBackgroundColor(0xFF6200EE);
+
+                        if (task.isSuccessful()) {
+                            authManager.loginUser(email, pass);
+                        } else {
+                            Toast.makeText(activity, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        loadingDialog.hide();
+                    });
         });
     }
 
