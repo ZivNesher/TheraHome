@@ -21,53 +21,9 @@ public class AuthUIController {
     }
 
     public void loadLoginScreen() {
-        activity.setContentView(R.layout.login_screen);
-        ImageButton emailBtn = activity.findViewById(R.id.email_login_button);
-        ImageButton gmailBtn = activity.findViewById(R.id.gmail_login_button);
-        Button loginBtn = activity.findViewById(R.id.login_button);
-
-        emailBtn.setOnClickListener(v -> loadRegisterScreen());
-        gmailBtn.setOnClickListener(v -> {
-            android.content.Intent signInIntent = authManager.getGoogleSignInClient().getSignInIntent();
-            activity.startActivityForResult(signInIntent, 9001);
-        });
-        loginBtn.setEnabled(true);
-
-        loginBtn.setOnClickListener(v -> {
-            TextInputEditText emailInput = activity.findViewById(R.id.email_input);
-            TextInputEditText passInput = activity.findViewById(R.id.password_input);
-
-            loginBtn.setEnabled(false);
-            loginBtn.setBackgroundColor(0xFFD3D3D3); // light gray
-
-            String email = emailInput.getText().toString().trim();
-            String pass = passInput.getText().toString().trim();
-
-            if (email.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(activity, "Email and password are required", Toast.LENGTH_SHORT).show();
-                loginBtn.setEnabled(true);
-                loginBtn.setBackgroundColor(0xFF6200EE); // restore color
-                return;
-            }
-
-            // ✅ Show loading dialog
-            LoadingDialogHelper loadingDialog = new LoadingDialogHelper();
-            loadingDialog.show(activity);
-
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener((MainActivity) activity, task -> {
-                        loadingDialog.hide();
-                        loginBtn.setEnabled(true);
-                        loginBtn.setBackgroundColor(0xFF6200EE);
-
-                        if (task.isSuccessful()) {
-                            authManager.loginUser(email, pass);
-                        } else {
-                            Toast.makeText(activity, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                        loadingDialog.hide();
-                    });
-        });
+        Intent intent = new Intent(activity, LoginActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     private void loadRegisterScreen() {

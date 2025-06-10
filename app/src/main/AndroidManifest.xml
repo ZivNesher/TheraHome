@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -25,14 +24,8 @@
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
 
-        <activity android:name="com.ziv.therahome.ProfileCompletionActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".VisitNotesActivity"
-            android:screenOrientation="portrait"
-            />
-
         <activity
-            android:name="com.ziv.therahome.MainActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -40,5 +33,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ziv.therahome.MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ziv.therahome.ProfileCompletionActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".VisitNotesActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

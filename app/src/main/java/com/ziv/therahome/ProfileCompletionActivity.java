@@ -1,6 +1,7 @@
 package com.ziv.therahome;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -119,7 +120,10 @@ public class ProfileCompletionActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(ProfileCompletionActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            finish(); // Close the activity
+                            Intent intent = new Intent(ProfileCompletionActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish(); // ✅ finishes this activity after starting MainActivity
+
                         } else {
                             Toast.makeText(ProfileCompletionActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }

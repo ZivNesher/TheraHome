@@ -1,5 +1,6 @@
 package com.ziv.therahome;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -19,8 +20,6 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     private AuthUIController authUIController;
     private BleManager bleManager;
 
-    private static final int RC_SIGN_IN = 9001;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +35,14 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         bleManager = new BleManager(this, scanManager);
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
-        new android.os.Handler().postDelayed(() -> authUIController.loadLoginScreen(), 7000);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            userManager.checkUserData(currentUser.getUid(), this); // Go to main activity flow
+        } else {
+            new android.os.Handler().postDelayed(() -> authUIController.loadLoginScreen(), 7000);
+        }
+
     }
 
     @Override
@@ -69,15 +75,12 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            authManager.handleGoogleSignIn(data);
-        }
-    }
-    @Override
     public void goToLoginScreen() {
-        authUIController.loadLoginScreen();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
+
 
 }

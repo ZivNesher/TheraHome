@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.ziv.therahome.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.Task;
 
 public class AuthManager {
     private FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
     private DatabaseReference usersRef;
     private Context context;
     private UserManagerCallback userManagerCallback;
@@ -44,11 +43,6 @@ public class AuthManager {
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
-    }
-
-    public GoogleSignInClient getGoogleSignInClient() {
-        return mGoogleSignInClient;
     }
 
     public void registerUser(String email, String password, String Id, String firstName, String surName,
@@ -125,35 +119,6 @@ public class AuthManager {
                         }
                     }
                 });
-    }
-
-    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener((MainActivity) context, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            String email = acct.getEmail(); // Extract email from GoogleSignInAccount
-                            UserManager userManager = new UserManager(userManagerCallback);
-                            userManager.checkUserData(user.getUid(), email, context);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(context, "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    public void handleGoogleSignIn(Intent data) {
-        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-        try {
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            firebaseAuthWithGoogle(account);
-        } catch (ApiException e) {
-            Toast.makeText(context, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
 }
