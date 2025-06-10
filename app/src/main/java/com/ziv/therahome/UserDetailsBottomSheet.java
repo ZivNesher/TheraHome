@@ -1,5 +1,6 @@
 package com.ziv.therahome;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ziv.therahome.R;
@@ -18,6 +20,17 @@ public class UserDetailsBottomSheet extends BottomSheetDialogFragment {
 
     private static final String ARG_USER = "user";
     private User user;
+    private DialogInterface.OnDismissListener onDismissListener;
+    public void addOnDismissListener(DialogInterface.OnDismissListener listener) {
+        this.onDismissListener = listener;
+    }
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
+        }
+    }
 
     public static UserDetailsBottomSheet newInstance(User user) {
         UserDetailsBottomSheet fragment = new UserDetailsBottomSheet();

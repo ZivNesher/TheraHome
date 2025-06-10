@@ -40,6 +40,8 @@ public class BleManager {
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic switchCharacteristic;
     private AlertDialog searchingDialog;
+    private boolean isUserDetailsOpen = false;
+
 
     private final List<BluetoothDevice> devices = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
@@ -172,6 +174,9 @@ public class BleManager {
     public void loadUserDetailsButton() {
         ImageButton burgerMenu = activity.findViewById(R.id.menu);
         burgerMenu.setOnClickListener(v -> {
+            if (isUserDetailsOpen) return; // Prevent opening multiple times
+            isUserDetailsOpen = true;
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 UserManager um = new UserManager(new UserManagerCallback() {
@@ -185,15 +190,24 @@ public class BleManager {
                         User u = snapshot.getValue(User.class);
                         if (u != null) {
                             UserDetailsBottomSheet bs = UserDetailsBottomSheet.newInstance(u);
+
+                            // Reset flag when the bottom sheet is dismissed
+                            bs.addOnDismissListener(dialog -> isUserDetailsOpen = false);
+
                             bs.show(activity.getSupportFragmentManager(), "UserDetailsBottomSheet");
+                        } else {
+                            isUserDetailsOpen = false;
                         }
                     }
 
                     @Override
                     public void onCancelled(com.google.firebase.database.DatabaseError error) {
                         Toast.makeText(activity, "Failed to load user data", Toast.LENGTH_SHORT).show();
+                        isUserDetailsOpen = false;
                     }
                 });
+            } else {
+                isUserDetailsOpen = false;
             }
         });
     }
