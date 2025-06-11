@@ -26,12 +26,43 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:padding="12dp" />
-    <com.google.android.material.textview.MaterialTextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:visibility="invisible"
-        ></com.google.android.material.textview.MaterialTextView>
+        android:layout_weight="8"
+        android:orientation="horizontal"
+        android:background="@color/main2"
+        android:gravity="center"
+        >
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/ble_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="Checking BLE connection..."
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:backgroundTint="@color/main2"
+            android:background="@color/main2"
+            tools:text="TheraHome BLE: Connected" />
+        <Button
+            android:id="@+id/reconnect_button"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
+            android:text="Reconnect to TheraHome"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"
+            android:backgroundTint="@color/main1"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

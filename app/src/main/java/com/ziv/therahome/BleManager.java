@@ -262,6 +262,7 @@ public class BleManager {
             scanner.stopScan(scanCallback);
             if (searchingDialog.isShowing()) searchingDialog.dismiss();
             showDeviceDialog();
+            activity.updateBleStatus(false);
         }, 8000);
     }
 
@@ -320,8 +321,13 @@ public class BleManager {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Log.d("BLE", "Connected to GATT server.");
                     gatt.discoverServices();
+                    activity.updateBleStatus(true);
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    Log.d("BLE", "Disconnected from GATT server.");
+                    activity.updateBleStatus(false);
                 }
             }
+
 
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -466,6 +472,7 @@ public class BleManager {
             gatt.disconnect();
             gatt.close();
             gatt = null;
+            activity.updateBleStatus(false);
             Log.d("BLE", "Disconnected from Bluetooth device");
         }
     }
