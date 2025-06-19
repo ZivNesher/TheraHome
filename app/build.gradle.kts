@@ -11,9 +11,8 @@ android {
         applicationId = "com.ziv.therahome"
         minSdk = 26
         targetSdk = 34
-        versionCode = 13
+        versionCode = 14
         versionName = "4.1"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

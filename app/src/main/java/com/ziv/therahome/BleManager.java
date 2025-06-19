@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,6 +42,12 @@ public class BleManager {
     private BluetoothGattCharacteristic switchCharacteristic;
     private AlertDialog searchingDialog;
     private boolean isUserDetailsOpen = false;
+    private final Handler exerciseHandler = new Handler(Looper.getMainLooper());
+    private Runnable movementCueRunnable;
+    private TextView movementCountdownView;
+    private FrameLayout countdownOverlay;
+
+
 
 
     private final List<BluetoothDevice> devices = new ArrayList<>();
@@ -69,6 +76,9 @@ public class BleManager {
         exercise_3_Btn = activity.findViewById(R.id.start_button_3);
         exercise_4_Btn = activity.findViewById(R.id.start_button_4);
         exercise_5_Btn = activity.findViewById(R.id.start_button_5);
+        movementCountdownView = activity.findViewById(R.id.movement_countdown);
+        countdownOverlay = activity.findViewById(R.id.countdown_overlay);
+
 
         for (Button btn : Arrays.asList(exercise_1_Btn, exercise_2_Btn, exercise_3_Btn, exercise_4_Btn, exercise_5_Btn)) {
             btn.setEnabled(false);
@@ -93,6 +103,7 @@ public class BleManager {
                     clickedBtn.setTextColor(Color.BLACK);
                     clickedBtn.setText("3");
 
+
                     Handler countdownHandler = new Handler(Looper.getMainLooper());
                     Runnable countdownRunnable = new Runnable() {
                         int count = 3;
@@ -107,6 +118,7 @@ public class BleManager {
                                 currentExerciseCase = finalCaseNum;
                                 switchCharacteristic.setValue(new byte[]{(byte) finalCaseNum});
                                 @SuppressLint("MissingPermission") boolean success = gatt.writeCharacteristic(switchCharacteristic);
+                                startMovementCueCycle();
                                 Log.d("BLE", "Started Exercise Case " + finalCaseNum + ": " + success);
                                 Toast.makeText(activity, "Started Exercise " + finalCaseNum, Toast.LENGTH_SHORT).show();
 
@@ -129,6 +141,9 @@ public class BleManager {
 
                     Log.d("BLE", "Sent STOP (9): " + success);
                     Toast.makeText(activity, "Stopped Exercise " + caseNum, Toast.LENGTH_SHORT).show();
+                    exerciseHandler.removeCallbacks(movementCueRunnable);
+                    movementCountdownView.setVisibility(View.GONE);
+
 
                     clickedBtn.setBackgroundColor(0xD3D3D3);
                     clickedBtn.setText("RESTART");
@@ -476,4 +491,44 @@ public class BleManager {
             Log.d("BLE", "Disconnected from Bluetooth device");
         }
     }
+    private void startMovementCueCycle() {
+        long totalDuration = 2 * 60 * 1000; // 2 minutes
+        long cueInterval = 7 * 1000L;
+
+        long startTime = System.currentTimeMillis();
+
+        movementCueRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = System.currentTimeMillis() - startTime;
+                if (elapsed >= totalDuration) {
+                    return; // Stop after 2 minutes
+                }
+
+                run3SecondCountdown();
+
+                // Re-post cue
+                exerciseHandler.postDelayed(this, cueInterval);
+            }
+        };
+
+        exerciseHandler.post(movementCueRunnable);
+    }
+
+    private void run3SecondCountdown() {
+        activity.runOnUiThread(() -> {
+            countdownOverlay.setVisibility(View.VISIBLE);
+            movementCountdownView.setText("3");
+
+            Handler countdownHandler = new Handler(Looper.getMainLooper());
+            countdownHandler.postDelayed(() -> movementCountdownView.setText("2"), 1000);
+            countdownHandler.postDelayed(() -> movementCountdownView.setText("1"), 2000);
+            countdownHandler.postDelayed(() -> {
+                countdownOverlay.setVisibility(View.GONE);
+            }, 3000);
+        });
+    }
+
+
+
 }
