@@ -95,11 +95,13 @@
                 android:layout_gravity="center_horizontal"
                 android:paddingBottom="8dp"/>
 
-            <WebView
-                android:id="@+id/instruction_webview"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/instruction_pager"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@android:color/black" />
+                android:background="@android:color/black"
+                android:padding="8dp" />
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

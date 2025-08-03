@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
@@ -96,11 +97,14 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         if (!AppManager.getInstance().isUserLoggedIn()) {
             bleManager.startInitialBleScan();
         }
-        WebView webView = findViewById(R.id.instruction_webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        String html = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bensREM3tnw\" frameborder=\"0\" allowfullscreen></iframe>";
-        webView.loadData(html, "text/html", "utf-8");
-
+        ViewPager2 instructionPager = findViewById(R.id.instruction_pager);
+        int[] instructionImages = {
+                R.drawable.instruction_1,
+                R.drawable.instruction_2,
+                R.drawable.instruction_3
+        };
+        ImageAdapter adapter = new ImageAdapter(this, instructionImages);
+        instructionPager.setAdapter(adapter);
 
     }
     public void updateBleStatus(boolean isConnected) {
