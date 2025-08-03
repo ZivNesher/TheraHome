@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -17,7 +15,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.ziv.therahome.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -101,7 +98,8 @@ public class MainActivity extends AppCompatActivity implements UserManagerCallba
         int[] instructionImages = {
                 R.drawable.instruction_1,
                 R.drawable.instruction_2,
-                R.drawable.instruction_3
+                R.drawable.instruction_3,
+                R.drawable.instruction_5
         };
         ImageAdapter adapter = new ImageAdapter(this, instructionImages);
         instructionPager.setAdapter(adapter);
