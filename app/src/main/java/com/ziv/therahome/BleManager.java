@@ -515,19 +515,34 @@ public class BleManager {
         exerciseHandler.post(movementCueRunnable);
     }
 
-    private void run3SecondCountdown() {
-        activity.runOnUiThread(() -> {
-            countdownOverlay.setVisibility(View.VISIBLE);
-            movementCountdownView.setText("3");
+//    private void run3SecondCountdown() {
+//        activity.runOnUiThread(() -> {
+//            countdownOverlay.setVisibility(View.VISIBLE);
+//            movementCountdownView.setText("3");
+//
+//            Handler countdownHandler = new Handler(Looper.getMainLooper());
+//            countdownHandler.postDelayed(() -> movementCountdownView.setText("2"), 1000);
+//            countdownHandler.postDelayed(() -> movementCountdownView.setText("1"), 2000);
+//            countdownHandler.postDelayed(() -> {
+//                countdownOverlay.setVisibility(View.GONE);
+//            }, 3000);
+//        });
+//    }
+private void run3SecondCountdown() {
+    activity.runOnUiThread(() -> {
+        countdownOverlay.setVisibility(View.VISIBLE);
+        movementCountdownView.setVisibility(View.VISIBLE);   // <-- make sure it's visible
+        movementCountdownView.setText("3");
 
-            Handler countdownHandler = new Handler(Looper.getMainLooper());
-            countdownHandler.postDelayed(() -> movementCountdownView.setText("2"), 1000);
-            countdownHandler.postDelayed(() -> movementCountdownView.setText("1"), 2000);
-            countdownHandler.postDelayed(() -> {
-                countdownOverlay.setVisibility(View.GONE);
-            }, 3000);
-        });
-    }
+        Handler countdownHandler = new Handler(Looper.getMainLooper());
+        countdownHandler.postDelayed(() -> movementCountdownView.setText("2"), 1000);
+        countdownHandler.postDelayed(() -> movementCountdownView.setText("1"), 2000);
+        countdownHandler.postDelayed(() -> {
+            movementCountdownView.setVisibility(View.GONE);  // optional: hide text when done
+            countdownOverlay.setVisibility(View.GONE);
+        }, 3000);
+    });
+}
 
 
 
