@@ -46,6 +46,9 @@ public class BleManager {
     private Runnable movementCueRunnable;
     private TextView movementCountdownView;
     private FrameLayout countdownOverlay;
+    private final Handler scanHandler = new Handler(Looper.getMainLooper());
+    private Runnable scanTimeoutRunnable;
+    private boolean scanHandled = false;
 
 
 
@@ -245,6 +248,7 @@ public class BleManager {
 
         devices.clear();
         names.clear();
+        scanHandled = false;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setCancelable(false);
@@ -273,12 +277,14 @@ public class BleManager {
                 new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(),
                 scanCallback);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        scanTimeoutRunnable = () -> {
+            if (scanHandled) return;
             scanner.stopScan(scanCallback);
-            if (searchingDialog.isShowing()) searchingDialog.dismiss();
+            if (searchingDialog != null && searchingDialog.isShowing()) searchingDialog.dismiss();
             showDeviceDialog();
             activity.updateBleStatus(false);
-        }, 8000);
+        };
+        scanHandler.postDelayed(scanTimeoutRunnable, 8000);
     }
 
 
@@ -296,14 +302,19 @@ public class BleManager {
                 names.add(displayName);
 
                 if (scanner != null) {
-                    scanner.stopScan(this); //stop scanning immediately
+                    scanner.stopScan(this);
                 }
 
                 if (searchingDialog != null && searchingDialog.isShowing()) {
                     searchingDialog.dismiss();
                 }
 
-                showDeviceDialog(); //go straight to the selection dialog
+                scanHandled = true;
+                if (scanTimeoutRunnable != null) {
+                    scanHandler.removeCallbacks(scanTimeoutRunnable);
+                }
+
+                showDeviceDialog();
             }
         }
     };
@@ -537,10 +548,12 @@ private void run3SecondCountdown() {
         Handler countdownHandler = new Handler(Looper.getMainLooper());
         countdownHandler.postDelayed(() -> movementCountdownView.setText("2"), 1000);
         countdownHandler.postDelayed(() -> movementCountdownView.setText("1"), 2000);
+        countdownHandler.postDelayed(() -> movementCountdownView.setText("Go!"), 3000);
+
         countdownHandler.postDelayed(() -> {
             movementCountdownView.setVisibility(View.GONE);  // optional: hide text when done
             countdownOverlay.setVisibility(View.GONE);
-        }, 3000);
+        }, 4000);
     });
 }
 
